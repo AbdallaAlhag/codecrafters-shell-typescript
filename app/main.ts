@@ -17,10 +17,11 @@ function main() {
       console.log(answer.slice(5));
       main();
     } else if (answer.startsWith("type ")) {
-      if (types.includes(answer.slice(5))) {
-        console.log(`${answer} is a shell builtin`);
+      const input: string = answer.slice(5);
+      if (types.includes(input)) {
+        console.log(`${input} is a shell builtin`);
       } else {
-        console.log(`${answer} is not a shell builtin`);
+        console.log(`${input} is not a shell builtin`);
       }
       main();
     }
