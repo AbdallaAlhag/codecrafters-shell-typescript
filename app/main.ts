@@ -20,7 +20,7 @@ function main() {
       if (types.includes(input)) {
         console.log(`${input} is a shell builtin`);
       } else {
-        console.log(`${input} is not a shell builtin`);
+        console.log(`${input}: not found`);
       }
     } else {
       console.log(`${answer}: command not found`);
