@@ -3,12 +3,19 @@ import { createInterface } from "readline";
 const rl = createInterface({
   input: process.stdin,
   output: process.stdout,
-  terminal: true,
-
+  // terminal: true,
 });
 
 // Uncomment this block to pass the first stage
-rl.question("$ ", (answer) => {
-  console.log(`${answer}: command not found`);
-  rl.close();
-});
+function main() {
+  rl.question("$ ", (answer: string) => {
+    if (answer === "exit") {
+      rl.close();
+    } else {
+      console.log(`${answer}: command not found`);
+      main();
+    }
+  });
+}
+
+main();
