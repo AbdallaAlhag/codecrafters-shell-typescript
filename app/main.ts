@@ -19,6 +19,7 @@ function main() {
       const input: string = answer.slice(5);
       if (types.includes(input)) {
         console.log(`${input} is a shell builtin`);
+        main();
       } else {
         console.log(`${input} is not a shell builtin`);
       }
