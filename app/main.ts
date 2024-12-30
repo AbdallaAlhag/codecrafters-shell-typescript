@@ -11,13 +11,13 @@ function main() {
   rl.question("$ ", (answer: string) => {
     if (answer === "exit 0") {
       rl.close();
-    } else if (answer.startsWith("echo") === true) {
+    }
+    if (answer.startsWith("echo") === true) {
       console.log(answer.slice(5));
       main();
-    } else {
-      console.log(`${answer}: command not found`);
-      main();
     }
+    console.log(`${answer}: command not found`);
+    main();
   });
 }
 
