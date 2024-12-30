@@ -22,8 +22,8 @@ function main() {
         main();
       } else {
         console.log(`${input} is not a shell builtin`);
+        main();
       }
-      main();
     }
     console.log(`${answer}: command not found`);
     main();
