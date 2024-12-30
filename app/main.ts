@@ -6,7 +6,6 @@ const rl = createInterface({
   // terminal: true,
 });
 
-// Uncomment this block to pass the first stage
 function main() {
   const types: string[] = ["echo", "type"];
   rl.question("$ ", (answer: string) => {
