@@ -1,5 +1,6 @@
 import { createInterface } from "readline";
 import * as fs from "fs";
+import { exec } from "child_process";
 
 const rl = createInterface({
   input: process.stdin,
@@ -14,6 +15,38 @@ const BUILTIN_COMMANDS: string[] = ["echo", "type", "exit"];
 const isEchoCommand = (input: string) => input === BUILTIN_COMMANDS[0];
 const isTypeCommand = (input: string) => input === BUILTIN_COMMANDS[1];
 
+/**
+ * Check if a file exists and is executable.
+ * @param filePath - The path to the file.
+ * @returns True if the file exists and is executable, false otherwise.
+ */
+function isExecutable(filePath: string): boolean {
+  try {
+    const stats = fs.statSync(filePath);
+    return stats.isFile() && (stats.mode & 0o111) !== 0;
+  } catch (err) {
+    return false;
+  }
+}
+
+function executeProgram(command: string, args: string[]): void {
+  exec(
+    `${command} ${args.join(" ")}`,
+    (error: Error | null, stdout: string, stderr: string) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      if (stdout) {
+        console.log(`stdout: ${stdout}`);
+      }
+      if (stderr) {
+        console.error(`stderr: ${stderr}`);
+      }
+    }
+  );
+}
+
 function handleBuiltinCommand(restArgsStr: string): void {
   if (BUILTIN_COMMANDS.includes(restArgsStr)) {
     console.log(`${restArgsStr} is a shell builtin`);
@@ -23,12 +56,6 @@ function handleBuiltinCommand(restArgsStr: string): void {
   //   handlePath(restArgsStr);
   // }
 }
-
-/**
- * Check if a file exists and is executable.
- * @param filePath - The path to the file.
- * @returns True if the file exists and is executable, false otherwise.
- */
 
 function handlePath(command: string): void {
   // Detect the correct PATH delimiter for the current OS
@@ -102,9 +129,12 @@ function main(): void {
           handlePath(restArgsStr);
         }
       }
+    } else if (isExecutable(command)) {
+      executeProgram(command, restArgs);
     } else {
       console.log(`${answer}: command not found`);
     }
+
     main();
   });
 }
