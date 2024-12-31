@@ -45,7 +45,6 @@ function isExecutable(command: string): boolean {
       }
     }
   }
-  console.log("not executable");
   return false;
 
   // try {
@@ -139,11 +138,15 @@ function main(): void {
           handlePath(restArgsStr);
         }
       }
-    } else if (isExecutable(command)) {
-      console.log(`${command} is executable`);
+    }
+    // else if (isExecutable(command)) {
+    //   console.log(`${command} is executable`);
+    //   executeProgram(command, restArgs);
+    // }
+    else {
       executeProgram(command, restArgs);
-    } else {
-      console.log(`${answer}: command not found`);
+
+      // console.log(`${answer}: command not found`);
     }
 
     main();
