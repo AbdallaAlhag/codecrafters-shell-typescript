@@ -72,11 +72,18 @@ function executeProgram(command: string, args: string[]): void {
   //     }
   //   }
   // );
+  // try {
+  //   const output = execSync(`${command} ${args.join(" ")}`);
+  //   console.log(output.toString().trim());
+  // } catch (error) {
+  //   console.log(`just print command: ${command}`);
+  // }
   try {
-    const output = execSync(`${command} ${args.join(" ")}`);
+    const output = execSync(`${command} ${args.join(" ")}`, { stdio: "pipe" });
     console.log(output.toString().trim());
-  } catch (error) {
-    console.log(`just print command: ${command}`);
+  } catch (error: any) {
+    // Match the expected output format
+    console.log(`${command}: command not found`);
   }
 }
 
