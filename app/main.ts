@@ -86,7 +86,7 @@ function handleCdCommand(paths: string): void {
       try {
         process.chdir(newPath.join("/"));
       } catch (error) {
-        console.log(`cd: ${paths}: No such file or directory`);
+        // console.log(`cd: ${paths}: No such file or directory`);
       }
     } else if (paths === "") {
       // go to root directory
@@ -94,7 +94,7 @@ function handleCdCommand(paths: string): void {
       try {
         process.chdir("/");
       } catch (error) {
-        console.log(`cd: ${paths}: No such file or directory`);
+        // console.log(`cd: ${paths}: No such file or directory`);
       }
     }
   }
