@@ -65,8 +65,7 @@ function executeProgram(command: string, args: string[]): void {
         return;
       }
       if (stdout) {
-        // console.log(stdout);
-        process.stdout.write(stdout); // Use process.stdout.write instead of console.log
+        console.log(stdout);
       }
       if (stderr) {
         console.error(`stderr: ${stderr}`);
@@ -116,7 +115,8 @@ function handlePath(command: string): void {
 }
 
 function main(): void {
-  rl.question("$ ", (answer: string) => {
+  // rl.question("$ ", (answer: string) => {
+  rl.question("", (answer: string) => {
     const [command, ...restArgs] = answer.split(" ");
     const restArgsStr = restArgs.join(" ");
     // example: type exit hello world = ["type", "exit hello world"]
