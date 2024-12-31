@@ -1,6 +1,7 @@
 import { createInterface } from "readline";
 import * as fs from "fs";
 import { execSync } from "child_process";
+import * as path from "path";
 
 const rl = createInterface({
   input: process.stdin,
@@ -60,71 +61,46 @@ function handlePath(command: string): void {
   console.log(`${command}: not found`);
 }
 
+// only takes one argument like posix POSIX-compliant shells
 function handleCdCommand(paths: string): void {
-  const restArgs: string[] = paths.split(" ");
-  // console.log(restArgs);
-  for (const path of restArgs) {
-    const beforeSlash = path.split("/")[0];
-    let newPath: string;
-    // console.log(arg)
-    switch (beforeSlash) {
-      case "":
-        newPath = paths;
-        break;
-      case ".":
-        newPath = process.cwd() + path.slice(1);
-        break;
-      case "..":
-        // if multiple
-        const count = path.split("/").length;
-        // /home/user/project will return "/home/user"
-        // newPath = process.cwd().split("/").slice(0, -1).join("/");
-        const prePath = process.cwd().split("/");
-        newPath = prePath.slice(0, -count).join("/");
-        break;
-      default:
-        // root so
-        newPath = "/";
-        break;
-    }
-    try {
-      process.chdir(newPath);
-    } catch (error) {
-      // console.log(`cd: ${paths}: No such file or directory`);
-    }
-    // absolute path
-    // if (paths.startsWith("/")) {
-    //   try {
-    //     process.chdir(paths);
-    //   } catch (error) {
-    //     console.log(`cd: ${paths}: No such file or directory`);
-    //   }
-    // } else if (paths.startsWith(".")) {
-    //   // go to file in current directory
-    //   const newPath = process.cwd() + path.slice(1);
-    //   try {
-    //     process.chdir(newPath);
-    //   } catch (error) {
-    //     // console.log(`cd: ${paths}: No such file or directory`);
-    //   }
-    // } else if (paths === "..") {
-    //   // go back Parent directory
-    //   const newPath = process.cwd().split("/");
-    //   newPath.pop();
-    //   try {
-    //     process.chdir(newPath.join("/"));
-    //   } catch (error) {
-    //     // console.log(`cd: ${paths}: No such file or directory`);
-    //   }
-    // } else if (paths === "") {
-    //   // go to root directory
-    //   process.chdir("/");
-    //   try {
-    //     process.chdir("/");
-    //   } catch (error) {
-    //     // console.log(`cd: ${paths}: No such file or directory`);
-    //   }
-    // }
+  const beforeSlash = paths.split("/")[0];
+  let newPath: string;
+  console.log("paths", paths);
+  console.log("beforeSlash", beforeSlash);
+  switch (beforeSlash) {
+    // cd
+    case "":
+      if (paths === "") {
+        // root directory
+        newPath = path.resolve("/");
+      } else {
+        // don't really need to check but i guess it won't hurt
+        newPath = path.isAbsolute(paths)
+          ? paths
+          : path.resolve(process.cwd(), paths);
+      }
+      break;
+    case ".":
+      newPath = path.resolve(process.cwd(), paths);
+      break;
+    case "..":
+      // if multiple
+      const count = paths.split("/").length;
+      newPath = process.cwd();
+      for (let i = 0; i < count; i++) {
+        newPath = path.resolve(newPath, "..");
+      }
+      break;
+    default:
+      // change directory to current or we could just return
+      return;
+    // newPath = process.cwd();
+    // break;
+  }
+  try {
+    process.chdir(newPath);
+  } catch (error) {
+    // console.log(`cd: ${paths}: No such file or directory`);
   }
 }
 
