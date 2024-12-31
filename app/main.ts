@@ -1,6 +1,6 @@
 import { createInterface } from "readline";
 import * as fs from "fs";
-import { exec } from "child_process";
+import { exec, execSync } from "child_process";
 
 const rl = createInterface({
   input: process.stdin,
@@ -57,21 +57,23 @@ function isExecutable(command: string): boolean {
 }
 
 function executeProgram(command: string, args: string[]): void {
-  exec(
-    `${command} ${args.join(" ")}`,
-    (error: Error | null, stdout: string, stderr: string) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
-      if (stdout) {
-        console.log(stdout.trim());
-      }
-      if (stderr) {
-        console.error(`stderr: ${stderr}`);
-      }
-    }
-  );
+  // exec(
+  //   `${command} ${args.join(" ")}`,
+  //   (error: Error | null, stdout: string, stderr: string) => {
+  //     if (error) {
+  //       console.error(`exec error: ${error}`);
+  //       return;
+  //     }
+  //     if (stdout) {
+  //       console.log(stdout.trim());
+  //     }
+  //     if (stderr) {
+  //       console.error(`stderr: ${stderr}`);
+  //     }
+  //   }
+  // );
+  const output = execSync(`${command} ${args.join(" ")}`);
+  console.log(output.toString().trim());
 }
 
 function handleBuiltinCommand(restArgsStr: string): void {
