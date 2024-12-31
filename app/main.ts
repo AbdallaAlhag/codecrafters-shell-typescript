@@ -45,6 +45,7 @@ function isExecutable(command: string): boolean {
       }
     }
   }
+  console.log("not executable");
   return false;
 
   // try {
