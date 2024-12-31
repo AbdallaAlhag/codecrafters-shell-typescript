@@ -76,7 +76,7 @@ function executeProgram(command: string, args: string[]): void {
     const output = execSync(`${command} ${args.join(" ")}`);
     console.log(output.toString().trim());
   } catch (error) {
-    console.log(`${command}: command not found`);
+    console.log(`just print command: ${command}`);
   }
 }
 
