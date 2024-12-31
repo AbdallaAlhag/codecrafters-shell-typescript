@@ -65,8 +65,8 @@ function handlePath(command: string): void {
 function handleCdCommand(paths: string): void {
   const beforeSlash = paths.split("/")[0];
   let newPath: string;
-  console.log("paths", paths);
-  console.log("beforeSlash", beforeSlash);
+  // console.log("paths", paths);
+  // console.log("beforeSlash", beforeSlash);
   switch (beforeSlash) {
     // cd
     case "":
