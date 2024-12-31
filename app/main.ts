@@ -65,7 +65,8 @@ function executeProgram(command: string, args: string[]): void {
         return;
       }
       if (stdout) {
-        console.log(stdout);
+        // console.log(stdout);
+        process.stdout.write(stdout); // Use process.stdout.write instead of console.log
       }
       if (stderr) {
         console.error(`stderr: ${stderr}`);
