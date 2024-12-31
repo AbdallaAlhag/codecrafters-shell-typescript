@@ -62,7 +62,7 @@ function handlePath(command: string): void {
 
 function handleCdCommand(paths: string): void {
   const restArgs: string[] = paths.split(" ");
-  // console.log(restArgs);
+  console.log(restArgs);
   for (const path of restArgs) {
     const beforeSlash = path.split("/")[0];
     let newPath: string;
@@ -90,7 +90,7 @@ function handleCdCommand(paths: string): void {
     try {
       process.chdir(newPath);
     } catch (error) {
-      console.log(`cd: ${paths}: No such file or directory`);
+      // console.log(`cd: ${paths}: No such file or directory`);
     }
     // absolute path
     // if (paths.startsWith("/")) {
