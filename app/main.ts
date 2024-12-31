@@ -17,9 +17,11 @@ const isTypeCommand = (input: string) => input === BUILTIN_COMMANDS[1];
 function handleBuiltinCommand(restArgsStr: string): void {
   if (BUILTIN_COMMANDS.includes(restArgsStr)) {
     console.log(`${restArgsStr} is a shell builtin`);
-  } else {
-    console.log(`${restArgsStr}: not found`);
   }
+  // } else {
+  //   // console.log(`${restArgsStr}: not found`);
+  //   handlePath(restArgsStr);
+  // }
 }
 
 /**
@@ -27,34 +29,52 @@ function handleBuiltinCommand(restArgsStr: string): void {
  * @param filePath - The path to the file.
  * @returns True if the file exists and is executable, false otherwise.
  */
-function isExecutable(filePath: string): boolean {
-  try {
-    const stats = fs.statSync(filePath); // Get file stats, fs.statSync retrieves metadata about the file (synchronously).
-    // Check if it's a file and has execute permissions
-    // stats.isFile(): Confirms the path points to a file.
-    // (stats.mode & 0o111) !== 0: Ensures the file has execute permissions.
-    return stats.isFile() && (stats.mode & 0o111) !== 0;
-  } catch (err) {
-    // If an error occurs (e.g., file does not exist), return false
-    return false;
-  }
-}
 
 function handlePath(command: string): void {
-  const dir = process.env.PATH?.split(":");
-  // PATH="/usr/bin:/usr/local/bin"
-  // dir=["/usr/bin", "/usr/local/bin"]
-  if (dir !== undefined) {
-    for (let i = 0; i < dir.length; i++) {
-      const exec = `${dir[i]}/${command}`;
-      if (isExecutable(exec)) {
-        console.log(`${command} is ${exec}`);
-        return;
-      }
-    }
-  }
+  // Detect the correct PATH delimiter for the current OS
+  // const pathDelimiter = process.platform === "win32" ? ";" : ":";
+  // const dirs = process.env.PATH?.split(pathDelimiter);
+  // // PATH="/usr/bin:/usr/local/bin"
+  // // dir=["/usr/bin", "/usr/local/bin"]
+  // // console.log(dirs);
+  // // console.log("Checking directories:", dirs); // Debugging: show directories being checked
 
-  console.log(`${command}: not found`);
+  // if (dirs !== undefined) {
+  //   for (const dir of dirs) {
+  //     const exec = `${dir}/${command}`;
+  //     // console.log(`Checking if ${exec} is executable...`); // Debugging: show the path being checked
+
+  //     try {
+  //       const files = fs.readdirSync(dir);
+  //       if (files.includes(command)) {
+  //         console.log(`${command} is ${dir}/${command}`);
+  //         return;
+  //       }
+  //     } catch (err) {
+  //       // Skip directories that can't be read
+  //       continue;
+  //     }
+  //   }
+  // }
+
+  // console.log(`${command}: not found`);
+  const pathDelimiter = process.platform === "win32" ? ";" : ":";
+  const paths = (process.env.PATH || "").split(pathDelimiter);
+
+  const foundPath = paths.find((path) => {
+    try {
+      const contents = fs.readdirSync(path);
+      return contents.includes(command);
+    } catch (e) {
+      return false;
+    }
+  });
+
+  if (foundPath) {
+    console.log(`${command} is ${foundPath}/${command}`);
+  } else {
+    console.log(`${command}: not found`);
+  }
 }
 
 function main(): void {
@@ -69,15 +89,20 @@ function main(): void {
       rl.close();
       process.exit(0);
     }
-    if (isEchoCommand(command) === true) {
+    if (isEchoCommand(command)) {
       console.log(restArgsStr);
-    } else if (isTypeCommand(command) === true) {
+    } else if (isTypeCommand(command)) {
       // This was for builtin: builtins
-      handleBuiltinCommand(restArgsStr);
-      // This is for type builtin: executable files
-      handlePath(restArgsStr);
-    } else {
-      console.log(`${answer}: command not found`);
+      if (restArgsStr) {
+        if (BUILTIN_COMMANDS.includes(restArgsStr)) {
+          handleBuiltinCommand(restArgsStr);
+        } else {
+          // This is for type builtin: executable files
+          handlePath(restArgsStr);
+        }
+      } else {
+        console.log(`${answer}: command not found`);
+      }
     }
     main();
   });
