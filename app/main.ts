@@ -74,15 +74,28 @@ function handleCdCommand(paths: string): void {
     } else if (paths.startsWith(".")) {
       // go to file in current directory
       const newPath = process.cwd() + path.slice(1);
-      process.chdir(newPath);
+      try {
+        process.chdir(newPath);
+      } catch (error) {
+        console.log(`cd: ${paths}: No such file or directory`);
+      }
     } else if (paths === "..") {
       // go back Parent directory
       const newPath = process.cwd().split("/");
       newPath.pop();
-      process.chdir(newPath.join("/"));
+      try {
+        process.chdir(newPath.join("/"));
+      } catch (error) {
+        console.log(`cd: ${paths}: No such file or directory`);
+      }
     } else if (paths === "") {
       // go to root directory
       process.chdir("/");
+      try {
+        process.chdir("/");
+      } catch (error) {
+        console.log(`cd: ${paths}: No such file or directory`);
+      }
     }
   }
 }
