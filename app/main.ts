@@ -32,49 +32,50 @@ function handleBuiltinCommand(restArgsStr: string): void {
 
 function handlePath(command: string): void {
   // Detect the correct PATH delimiter for the current OS
-  // const pathDelimiter = process.platform === "win32" ? ";" : ":";
-  // const dirs = process.env.PATH?.split(pathDelimiter);
-  // // PATH="/usr/bin:/usr/local/bin"
-  // // dir=["/usr/bin", "/usr/local/bin"]
-  // // console.log(dirs);
-  // // console.log("Checking directories:", dirs); // Debugging: show directories being checked
-
-  // if (dirs !== undefined) {
-  //   for (const dir of dirs) {
-  //     const exec = `${dir}/${command}`;
-  //     // console.log(`Checking if ${exec} is executable...`); // Debugging: show the path being checked
-
-  //     try {
-  //       const files = fs.readdirSync(dir);
-  //       if (files.includes(command)) {
-  //         console.log(`${command} is ${dir}/${command}`);
-  //         return;
-  //       }
-  //     } catch (err) {
-  //       // Skip directories that can't be read
-  //       continue;
-  //     }
-  //   }
-  // }
-
-  // console.log(`${command}: not found`);
   const pathDelimiter = process.platform === "win32" ? ";" : ":";
-  const paths = (process.env.PATH || "").split(pathDelimiter);
+  const dirs = process.env.PATH?.split(pathDelimiter);
+  // PATH="/usr/bin:/usr/local/bin"
+  // dir=["/usr/bin", "/usr/local/bin"]
+  // console.log(dirs);
+  // console.log("Checking directories:", dirs); // Debugging: show directories being checked
 
-  const foundPath = paths.find((path) => {
-    try {
-      const contents = fs.readdirSync(path);
-      return contents.includes(command);
-    } catch (e) {
-      return false;
+  if (dirs !== undefined) {
+    for (const dir of dirs) {
+      const exec = `${dir}/${command}`;
+      // console.log(`Checking if ${exec} is executable...`); // Debugging: show the path being checked
+
+      try {
+        const files = fs.readdirSync(dir);
+        if (files.includes(command)) {
+          console.log(`${command} is ${dir}/${command}`);
+          return;
+        }
+      } catch (err) {
+        // Skip directories that can't be read
+        continue;
+      }
     }
-  });
-
-  if (foundPath) {
-    console.log(`${command} is ${foundPath}/${command}`);
-  } else {
-    console.log(`${command}: not found`);
   }
+
+  console.log(`${command}: not found`);
+
+  // const pathDelimiter = process.platform === "win32" ? ";" : ":";
+  // const paths = (process.env.PATH || "").split(pathDelimiter);
+
+  // const foundPath = paths.find((path) => {
+  //   try {
+  //     const contents = fs.readdirSync(path);
+  //     return contents.includes(command);
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // });
+
+  // if (foundPath) {
+  //   console.log(`${command} is ${foundPath}/${command}`);
+  // } else {
+  //   console.log(`${command}: not found`);
+  // }
 }
 
 function main(): void {
