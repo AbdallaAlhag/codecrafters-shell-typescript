@@ -10,11 +10,13 @@ const rl = createInterface({
 
 const EXIT_COMMAND: string = "exit 0";
 
-const BUILTIN_COMMANDS: string[] = ["echo", "type", "exit"];
+const BUILTIN_COMMANDS: string[] = ["echo", "type", "exit", "pwd"];
 
 const isEchoCommand = (input: string) => input === BUILTIN_COMMANDS[0];
 const isTypeCommand = (input: string) => input === BUILTIN_COMMANDS[1];
+const isPwdCommand = (input: string) => input === BUILTIN_COMMANDS[3];
 
+// NOT in use
 /**
  * Check if a file exists and is executable.
  * @param filePath - The path to the file.
@@ -47,6 +49,7 @@ function isExecutable(command: string): boolean {
   }
   return false;
 
+  // test to see if file is executable
   // try {
   //   const stats = fs.statSync(filePath);
   //   return stats.isFile() && (stats.mode & 0o111) !== 0;
@@ -57,6 +60,7 @@ function isExecutable(command: string): boolean {
 }
 
 function executeProgram(command: string, args: string[]): void {
+  // async didn't parse correctly enough to pass the test but still works
   // exec(
   //   `${command} ${args.join(" ")}`,
   //   (error: Error | null, stdout: string, stderr: string) => {
@@ -91,10 +95,6 @@ function handleBuiltinCommand(restArgsStr: string): void {
   if (BUILTIN_COMMANDS.includes(restArgsStr)) {
     console.log(`${restArgsStr} is a shell builtin`);
   }
-  // } else {
-  //   // console.log(`${restArgsStr}: not found`);
-  //   handlePath(restArgsStr);
-  // }
 }
 
 function handlePath(command: string): void {
@@ -151,15 +151,11 @@ function main(): void {
           handlePath(restArgsStr);
         }
       }
-    }
-    // else if (isExecutable(command)) {
-    //   console.log(`${command} is executable`);
-    //   executeProgram(command, restArgs);
-    // }
-    else {
+    } else if (isPwdCommand(command)) {
+      console.log(process.cwd());
+      // console.log(process.env.PATH);
+    } else {
       executeProgram(command, restArgs);
-
-      // console.log(`${answer}: command not found`);
     }
 
     main();
