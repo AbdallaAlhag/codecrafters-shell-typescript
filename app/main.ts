@@ -112,24 +112,6 @@ function handlePath(command: string): void {
   }
 
   console.log(`${command}: not found`);
-
-  // const pathDelimiter = process.platform === "win32" ? ";" : ":";
-  // const paths = (process.env.PATH || "").split(pathDelimiter);
-
-  // const foundPath = paths.find((path) => {
-  //   try {
-  //     const contents = fs.readdirSync(path);
-  //     return contents.includes(command);
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // });
-
-  // if (foundPath) {
-  //   console.log(`${command} is ${foundPath}/${command}`);
-  // } else {
-  //   console.log(`${command}: not found`);
-  // }
 }
 
 function main(): void {
@@ -157,6 +139,7 @@ function main(): void {
         }
       }
     } else if (isExecutable(command)) {
+      console.log(`${command} is executable`);
       executeProgram(command, restArgs);
     } else {
       console.log(`${answer}: command not found`);
