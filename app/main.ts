@@ -10,11 +10,12 @@ const rl = createInterface({
 
 const EXIT_COMMAND: string = "exit 0";
 
-const BUILTIN_COMMANDS: string[] = ["echo", "type", "exit", "pwd"];
+const BUILTIN_COMMANDS: string[] = ["exit", "echo", "type", "pwd", "cd"];
 
-const isEchoCommand = (input: string) => input === BUILTIN_COMMANDS[0];
-const isTypeCommand = (input: string) => input === BUILTIN_COMMANDS[1];
+const isEchoCommand = (input: string) => input === BUILTIN_COMMANDS[1];
+const isTypeCommand = (input: string) => input === BUILTIN_COMMANDS[2];
 const isPwdCommand = (input: string) => input === BUILTIN_COMMANDS[3];
+const isCdCommand = (input: string) => input === BUILTIN_COMMANDS[4];
 
 // NOT in use
 /**
@@ -127,6 +128,14 @@ function handlePath(command: string): void {
   console.log(`${command}: not found`);
 }
 
+// handle absolute path
+function handleCdCommand(absolutePath: string): void {
+  try {
+    process.chdir(absolutePath);
+  } catch (error) {
+    console.log(`cd: ${absolutePath}: No such file or directory`);
+  }
+}
 function main(): void {
   rl.question("$ ", (answer: string) => {
     const [command, ...restArgs] = answer.split(" ");
@@ -154,6 +163,8 @@ function main(): void {
     } else if (isPwdCommand(command)) {
       console.log(process.cwd());
       // console.log(process.env.PATH);
+    } else if (isCdCommand(command)) {
+      handleCdCommand(restArgsStr);
     } else {
       executeProgram(command, restArgs);
     }
