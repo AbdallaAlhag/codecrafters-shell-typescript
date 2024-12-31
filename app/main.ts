@@ -20,14 +20,40 @@ const isTypeCommand = (input: string) => input === BUILTIN_COMMANDS[1];
  * @param filePath - The path to the file.
  * @returns True if the file exists and is executable, false otherwise.
  */
-function isExecutable(filePath: string): boolean {
-  try {
-    const stats = fs.statSync(filePath);
-    return stats.isFile() && (stats.mode & 0o111) !== 0;
-  } catch (err) {
-    console.log("not executable");
-    return false;
+function isExecutable(command: string): boolean {
+  const pathDelimiter = process.platform === "win32" ? ";" : ":";
+  const dirs = process.env.PATH?.split(pathDelimiter);
+
+  function isExecutableInDir(dir: string): boolean {
+    const execPath = `${dir}/${command}`;
+    try {
+      const stats = fs.statSync(execPath);
+      return stats.isFile() && (stats.mode & 0o111) !== 0;
+    } catch (err) {
+      return false;
+    }
   }
+
+  if (dirs !== undefined) {
+    for (const dir of dirs) {
+      const exec = `${dir}/${command}`;
+      // console.log(`Checking if ${exec} is executable...`); // Debugging: show the path being checked
+
+      if (isExecutableInDir(exec)) {
+        // console.log(`${command} is ${exec}`);
+        return true;
+      }
+    }
+  }
+  return false;
+
+  // try {
+  //   const stats = fs.statSync(filePath);
+  //   return stats.isFile() && (stats.mode & 0o111) !== 0;
+  // } catch (err) {
+  //   console.log("not executable");
+  //   return false;
+  // }
 }
 
 function executeProgram(command: string, args: string[]): void {
