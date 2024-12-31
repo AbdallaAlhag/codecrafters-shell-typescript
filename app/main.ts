@@ -62,7 +62,7 @@ function handlePath(command: string): void {
 
 function handleCdCommand(paths: string): void {
   const restArgs: string[] = paths.split(" ");
-  console.log(restArgs);
+  // console.log(restArgs);
   for (const path of restArgs) {
     // absolute path
     if (paths.startsWith("/")) {
