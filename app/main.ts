@@ -1,6 +1,6 @@
 import { createInterface } from "readline";
 import * as fs from "fs";
-import { exec, execSync } from "child_process";
+import { execSync } from "child_process";
 
 const rl = createInterface({
   input: process.stdin,
@@ -17,77 +17,11 @@ const isTypeCommand = (input: string) => input === BUILTIN_COMMANDS[2];
 const isPwdCommand = (input: string) => input === BUILTIN_COMMANDS[3];
 const isCdCommand = (input: string) => input === BUILTIN_COMMANDS[4];
 
-// NOT in use
-/**
- * Check if a file exists and is executable.
- * @param filePath - The path to the file.
- * @returns True if the file exists and is executable, false otherwise.
- */
-function isExecutable(command: string): boolean {
-  const pathDelimiter = process.platform === "win32" ? ";" : ":";
-  const dirs = process.env.PATH?.split(pathDelimiter);
-
-  function isExecutableInDir(dir: string): boolean {
-    const execPath = `${dir}/${command}`;
-    try {
-      const stats = fs.statSync(execPath);
-      return stats.isFile() && (stats.mode & 0o111) !== 0;
-    } catch (err) {
-      return false;
-    }
-  }
-
-  if (dirs !== undefined) {
-    for (const dir of dirs) {
-      const exec = `${dir}/${command}`;
-      // console.log(`Checking if ${exec} is executable...`); // Debugging: show the path being checked
-
-      if (isExecutableInDir(exec)) {
-        // console.log(`${command} is ${exec}`);
-        return true;
-      }
-    }
-  }
-  return false;
-
-  // test to see if file is executable
-  // try {
-  //   const stats = fs.statSync(filePath);
-  //   return stats.isFile() && (stats.mode & 0o111) !== 0;
-  // } catch (err) {
-  //   console.log("not executable");
-  //   return false;
-  // }
-}
-
 function executeProgram(command: string, args: string[]): void {
-  // async didn't parse correctly enough to pass the test but still works
-  // exec(
-  //   `${command} ${args.join(" ")}`,
-  //   (error: Error | null, stdout: string, stderr: string) => {
-  //     if (error) {
-  //       console.error(`exec error: ${error}`);
-  //       return;
-  //     }
-  //     if (stdout) {
-  //       console.log(stdout.trim());
-  //     }
-  //     if (stderr) {
-  //       console.error(`stderr: ${stderr}`);
-  //     }
-  //   }
-  // );
-  // try {
-  //   const output = execSync(`${command} ${args.join(" ")}`);
-  //   console.log(output.toString().trim());
-  // } catch (error) {
-  //   console.log(`just print command: ${command}`);
-  // }
   try {
     const output = execSync(`${command} ${args.join(" ")}`, { stdio: "pipe" });
     console.log(output.toString().trim());
   } catch (error: any) {
-    // Match the expected output format
     console.log(`${command}: command not found`);
   }
 }
@@ -104,14 +38,12 @@ function handlePath(command: string): void {
   const dirs = process.env.PATH?.split(pathDelimiter);
   // PATH="/usr/bin:/usr/local/bin"
   // dir=["/usr/bin", "/usr/local/bin"]
-  // console.log(dirs);
-  // console.log("Checking directories:", dirs); // Debugging: show directories being checked
+  // [Debugging]: console.log("Checking directories:", dirs);
 
   if (dirs !== undefined) {
     for (const dir of dirs) {
       const exec = `${dir}/${command}`;
-      // console.log(`Checking if ${exec} is executable...`); // Debugging: show the path being checked
-
+      // [Debugging]: console.log(`Checking if ${exec} is executable...`);
       try {
         const files = fs.readdirSync(dir);
         if (files.includes(command)) {
@@ -128,14 +60,33 @@ function handlePath(command: string): void {
   console.log(`${command}: not found`);
 }
 
-// handle absolute path
-function handleCdCommand(absolutePath: string): void {
-  try {
-    process.chdir(absolutePath);
-  } catch (error) {
-    console.log(`cd: ${absolutePath}: No such file or directory`);
+function handleCdCommand(paths: string): void {
+  const restArgs: string[] = paths.split(" ");
+  console.log(restArgs);
+  for (const path of restArgs) {
+    // absolute path
+    if (paths.startsWith("/")) {
+      try {
+        process.chdir(paths);
+      } catch (error) {
+        console.log(`cd: ${paths}: No such file or directory`);
+      }
+    } else if (paths.startsWith(".")) {
+      // go to file in current directory
+      const newPath = process.cwd() + path.slice(1);
+      process.chdir(newPath);
+    } else if (paths === "..") {
+      // go back Parent directory
+      const newPath = process.cwd().split("/");
+      newPath.pop();
+      process.chdir(newPath.join("/"));
+    } else if (paths === "") {
+      // go to root directory
+      process.chdir("/");
+    }
   }
 }
+
 function main(): void {
   rl.question("$ ", (answer: string) => {
     const [command, ...restArgs] = answer.split(" ");
@@ -162,7 +113,6 @@ function main(): void {
       }
     } else if (isPwdCommand(command)) {
       console.log(process.cwd());
-      // console.log(process.env.PATH);
     } else if (isCdCommand(command)) {
       handleCdCommand(restArgsStr);
     } else {
