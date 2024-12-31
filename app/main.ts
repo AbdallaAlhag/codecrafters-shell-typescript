@@ -62,41 +62,69 @@ function handlePath(command: string): void {
 
 function handleCdCommand(paths: string): void {
   const restArgs: string[] = paths.split(" ");
-  // console.log(restArgs);
+  console.log(restArgs);
   for (const path of restArgs) {
-    // absolute path
-    if (paths.startsWith("/")) {
-      try {
-        process.chdir(paths);
-      } catch (error) {
-        console.log(`cd: ${paths}: No such file or directory`);
-      }
-    } else if (paths.startsWith(".")) {
-      // go to file in current directory
-      const newPath = process.cwd() + path.slice(1);
-      try {
-        process.chdir(newPath);
-      } catch (error) {
-        // console.log(`cd: ${paths}: No such file or directory`);
-      }
-    } else if (paths === "..") {
-      // go back Parent directory
-      const newPath = process.cwd().split("/");
-      newPath.pop();
-      try {
-        process.chdir(newPath.join("/"));
-      } catch (error) {
-        // console.log(`cd: ${paths}: No such file or directory`);
-      }
-    } else if (paths === "") {
-      // go to root directory
-      process.chdir("/");
-      try {
-        process.chdir("/");
-      } catch (error) {
-        // console.log(`cd: ${paths}: No such file or directory`);
-      }
+    const beforeSlash = path.split("/")[0];
+    let newPath: string;
+    // console.log(arg)
+    switch (beforeSlash) {
+      case "":
+        newPath = paths;
+        break;
+      case ".":
+        newPath = process.cwd() + path.slice(1);
+        break;
+      case "..":
+        // if multiple
+        const count = path.split("/").length;
+        // /home/user/project will return "/home/user"
+        // newPath = process.cwd().split("/").slice(0, -1).join("/");
+        const prePath = process.cwd().split("/");
+        newPath = prePath.slice(0, -count).join("/");
+        break;
+      default:
+        // root so
+        newPath = "/";
+        break;
     }
+    try {
+      process.chdir(newPath);
+    } catch (error) {
+      console.log(`cd: ${paths}: No such file or directory`);
+    }
+    // absolute path
+    // if (paths.startsWith("/")) {
+    //   try {
+    //     process.chdir(paths);
+    //   } catch (error) {
+    //     console.log(`cd: ${paths}: No such file or directory`);
+    //   }
+    // } else if (paths.startsWith(".")) {
+    //   // go to file in current directory
+    //   const newPath = process.cwd() + path.slice(1);
+    //   try {
+    //     process.chdir(newPath);
+    //   } catch (error) {
+    //     // console.log(`cd: ${paths}: No such file or directory`);
+    //   }
+    // } else if (paths === "..") {
+    //   // go back Parent directory
+    //   const newPath = process.cwd().split("/");
+    //   newPath.pop();
+    //   try {
+    //     process.chdir(newPath.join("/"));
+    //   } catch (error) {
+    //     // console.log(`cd: ${paths}: No such file or directory`);
+    //   }
+    // } else if (paths === "") {
+    //   // go to root directory
+    //   process.chdir("/");
+    //   try {
+    //     process.chdir("/");
+    //   } catch (error) {
+    //     // console.log(`cd: ${paths}: No such file or directory`);
+    //   }
+    // }
   }
 }
 
