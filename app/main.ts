@@ -25,6 +25,7 @@ function isExecutable(filePath: string): boolean {
     const stats = fs.statSync(filePath);
     return stats.isFile() && (stats.mode & 0o111) !== 0;
   } catch (err) {
+    console.log("not executable");
     return false;
   }
 }
