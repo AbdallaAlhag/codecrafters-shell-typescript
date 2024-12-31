@@ -101,9 +101,9 @@ function main(): void {
           // This is for type builtin: executable files
           handlePath(restArgsStr);
         }
-      } else {
-        console.log(`${answer}: command not found`);
       }
+    } else {
+      console.log(`${answer}: command not found`);
     }
     main();
   });
