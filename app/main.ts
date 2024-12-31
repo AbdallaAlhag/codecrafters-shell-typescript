@@ -77,7 +77,7 @@ function handleCdCommand(paths: string): void {
       try {
         process.chdir(newPath);
       } catch (error) {
-        console.log(`cd: ${paths}: No such file or directory`);
+        // console.log(`cd: ${paths}: No such file or directory`);
       }
     } else if (paths === "..") {
       // go back Parent directory
