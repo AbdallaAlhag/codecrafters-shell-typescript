@@ -87,7 +87,7 @@ function handleCdCommand(paths: string): void {
       // if multiple
       const count = paths.split("/").length;
       newPath = process.cwd();
-      for (let i = 0; i < count; i++) {
+      for (let i = 1; i < count; i++) {
         newPath = path.resolve(newPath, "..");
       }
       break;
