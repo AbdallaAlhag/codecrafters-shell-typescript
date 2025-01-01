@@ -76,7 +76,7 @@ function handleCdCommand(paths: string): void {
       } else {
         // don't really need to check but i guess it won't hurt
         newPath = path.isAbsolute(paths)
-          ? paths
+          ? path.resolve(paths)
           : path.resolve(process.cwd(), paths);
       }
       break;
