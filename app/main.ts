@@ -91,7 +91,7 @@ function parseEchoQuotes(answer: string): void {
 
       let escape = false;
       let result = "";
-      console.log(args);
+      // console.log(args);
       for (let char of args) {
         if (escape) {
           result += char;
