@@ -2,6 +2,7 @@ import { createInterface } from "readline";
 import * as fs from "fs";
 import { execSync } from "child_process";
 import * as path from "path";
+import shellQuote from "shell-quote";
 
 const rl = createInterface({
   input: process.stdin,
@@ -150,7 +151,13 @@ function main(): void {
       process.exit(0);
     }
     if (isEchoCommand(command)) {
-      parseEchoQuotes(restArgs);
+      const args = shellQuote.parse(answer);
+      const [echoCommand, ...echoRestArgs] = args;
+      // Convert ParseEntry[] to string[]
+      const stringArgs = echoRestArgs
+        .map((entry) => (typeof entry === "string" ? entry : ""))
+        .filter((arg) => arg !== "");
+      parseEchoQuotes(stringArgs);
       // console.log(restArgsStr);
     } else if (isTypeCommand(command)) {
       // This was for builtin: builtins

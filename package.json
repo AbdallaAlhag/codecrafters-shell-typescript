@@ -6,6 +6,10 @@
     "dev": "bun run app/main.ts"
   },
   "devDependencies": {
-    "@types/node": "^20.14.2"
+    "@types/node": "^20.14.2",
+    "@types/shell-quote": "^1.7.5"
+  },
+  "dependencies": {
+    "shell-quote": "^1.8.2"
   }
 }
