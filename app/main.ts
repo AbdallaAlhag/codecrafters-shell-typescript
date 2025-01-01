@@ -108,6 +108,7 @@ function parseEchoQuotes(answer: string): void {
     //   .filter((x) => x !== "")
     //   .join(" ");
     let escape = false;
+    let space = false;
     let result = "";
 
     for (let char of stringArgs) {
@@ -117,7 +118,15 @@ function parseEchoQuotes(answer: string): void {
         // check if the next char is a backslash
       } else if (char === "\\") {
         escape = true;
-      } else if (char !== "'" && char !== '"') {
+      } else if (char === " ") {
+        space = true;
+      } else if (space) {
+        result += " ";
+        space = false;
+        if (char !== "'" && char !== '"' && char !== " ") {
+          result += char;
+        }
+      } else if (char !== "'" && char !== '"' && char !== " ") {
         result += char;
       }
     }
