@@ -76,11 +76,12 @@ function parseEchoQuotes(answer: string): void {
 
   if (hasDoubleQuotes) {
     const stringArgsArray = stringArgs.split('"');
-    // console.log("stringArgsArray: ", stringArgsArray);
-    
+    console.log("stringArgsArray: ", stringArgsArray);
+
     const output: string[] = [];
     for (let args of stringArgsArray) {
-      if (args === "" || args === " ") {
+      args = args.trim();
+      if (args === "") {
         continue;
       }
       args = args.replace(/"/g, "");
@@ -88,6 +89,7 @@ function parseEchoQuotes(answer: string): void {
       // console.log("input: ", input);
       output.push(args);
     }
+    console.log("output array: ", output);
     console.log(output.join(" "));
     return;
   }
