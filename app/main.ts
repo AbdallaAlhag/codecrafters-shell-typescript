@@ -65,12 +65,10 @@ function handlePath(command: string): void {
 function handleCdCommand(paths: string): void {
   const beforeSlash = paths.split("/")[0];
   let newPath: string;
-  // console.log("paths", paths);
-  // console.log("beforeSlash", beforeSlash);
   switch (beforeSlash) {
     // cd
     case "":
-      if (paths === "") {
+      if (paths === "~") {
         // root directory
         newPath = path.resolve("/");
       } else {
@@ -92,10 +90,7 @@ function handleCdCommand(paths: string): void {
       }
       break;
     default:
-      // change directory to current or we could just return
       return;
-    // newPath = process.cwd();
-    // break;
   }
   try {
     process.chdir(newPath);
