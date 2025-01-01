@@ -68,7 +68,7 @@ function handlePath(command: string): void {
 
 function parseEchoQuotes(input: string): void {
   if (input === '"') {
-    input = input.replace(/'/g, "");
+    input = input.replace(/"/g, "");
     console.log(input);
     return;
   }
