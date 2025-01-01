@@ -87,12 +87,26 @@ function parseEchoQuotes(answer: string): void {
       if (args === "") {
         continue;
       }
-      args = args.replace(/"/g, "");
-      // console.log('arr: ', arr);
-      // console.log("input: ", input);
-      output.push(args);
+      // args = args.replace(/"/g, "");
+
+      let escape = false;
+      let result = "";
+
+      for (let char of args) {
+        if (escape) {
+          result += char;
+          escape = false;
+          // check if the next char is a backslash
+        } else if (char === "\\") {
+          escape = true;
+        } else if (char !== '"') {
+          result += char;
+        }
+      }
+
+      // output.push(args);
+      output.push(result);
     }
-    // console.log("output array: ", output);
     console.log(output.join(" "));
     return;
   }
