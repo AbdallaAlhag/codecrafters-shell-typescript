@@ -19,6 +19,11 @@ const isPwdCommand = (input: string) => input === BUILTIN_COMMANDS[3];
 const isCdCommand = (input: string) => input === BUILTIN_COMMANDS[4];
 
 function executeProgram(command: string, args: string[]): void {
+  if (command === "cat") {
+    for (let arg of args) {
+      arg = parseCatSingleQuotes(arg);
+    }
+  }
   try {
     const output = execSync(`${command} ${args.join(" ")}`, { stdio: "pipe" });
     console.log(output.toString().trim());
@@ -61,8 +66,12 @@ function handlePath(command: string): void {
   console.log(`${command}: not found`);
 }
 
-function parseSingleQuotes(input: string): string[] {
-  
+function parseEchoSingleQuotes(input: string): void {
+  console.log(input.replace(/'/g, ""));
+}
+
+function parseCatSingleQuotes(input: string): string {
+  return input.replace(/'| /g, "");
 }
 // only takes one argument like posix POSIX-compliant shells
 function handleCdCommand(paths: string): void {
@@ -118,7 +127,7 @@ function main(): void {
       process.exit(0);
     }
     if (isEchoCommand(command)) {
-      parseSingleQuotes(restArgsStr);
+      parseEchoSingleQuotes(restArgsStr);
       // console.log(restArgsStr);
     } else if (isTypeCommand(command)) {
       // This was for builtin: builtins
