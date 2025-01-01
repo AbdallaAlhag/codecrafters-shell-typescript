@@ -1,8 +1,8 @@
+// run command: ./your_program.sh
 import { createInterface } from "readline";
 import * as fs from "fs";
 import { execSync } from "child_process";
 import * as path from "path";
-import shellQuote from "shell-quote";
 
 const rl = createInterface({
   input: process.stdin,
@@ -67,10 +67,22 @@ function handlePath(command: string): void {
   console.log(`${command}: not found`);
 }
 
-function parseEchoQuotes(restArgs: string[]): void {
-  if (restArgs.includes('"')) {
+function parseEchoQuotes(answer: string): void {
+  // console.log("answer: ", answer);
+
+  let stringArgs = answer.slice(5).trim();
+  // console.log("stringArgs: ", stringArgs);
+  const hasDoubleQuotes = stringArgs.includes('"');
+
+  if (hasDoubleQuotes) {
+    const stringArgsArray = stringArgs.split('"');
+    // console.log("stringArgsArray: ", stringArgsArray);
+    
     const output: string[] = [];
-    for (let args of restArgs) {
+    for (let args of stringArgsArray) {
+      if (args === "" || args === " ") {
+        continue;
+      }
       args = args.replace(/"/g, "");
       // console.log('arr: ', arr);
       // console.log("input: ", input);
@@ -81,12 +93,11 @@ function parseEchoQuotes(restArgs: string[]): void {
   }
 
   // single quote
-  let restArgsStr = restArgs.join(" ");
-  if (restArgsStr.includes("'")) {
-    restArgsStr = restArgsStr.replace(/'/g, "");
-    console.log(restArgsStr);
+  if (stringArgs.includes("'")) {
+    stringArgs = stringArgs.replace(/'/g, "");
+    console.log(stringArgs);
   } else {
-    const arr = restArgsStr
+    const arr = stringArgs
       .split(" ")
       .filter((x) => x !== "")
       .join(" ");
@@ -151,13 +162,7 @@ function main(): void {
       process.exit(0);
     }
     if (isEchoCommand(command)) {
-      const args = shellQuote.parse(answer);
-      const [echoCommand, ...echoRestArgs] = args;
-      // Convert ParseEntry[] to string[]
-      const stringArgs = echoRestArgs
-        .map((entry) => (typeof entry === "string" ? entry : ""))
-        .filter((arg) => arg !== "");
-      parseEchoQuotes(stringArgs);
+      parseEchoQuotes(answer);
       // console.log(restArgsStr);
     } else if (isTypeCommand(command)) {
       // This was for builtin: builtins
