@@ -69,8 +69,14 @@ function handlePath(command: string): void {
 function parseEchoSingleQuotes(input: string): void {
   if (input.includes("'")) {
     input = input.replace(/'/g, "");
+    console.log(input);
+  } else {
+    const arr = input
+      .split(" ")
+      .filter((x) => x !== "")
+      .join(" ");
+    console.log("input", arr);
   }
-  console.log(input);
 }
 
 function parseCatSingleQuotes(input: string): string {
