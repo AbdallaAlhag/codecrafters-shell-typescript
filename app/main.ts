@@ -68,20 +68,10 @@ function handleCdCommand(paths: string): void {
   switch (beforeSlash) {
     // cd
     case "":
-      if (paths === "~") {
-        // root directory
-        const HOME = process.env.HOME;
-        if (HOME === undefined) {
-          console.log("cd: $HOME is not set");
-          return;
-        }
-        newPath = path.resolve(HOME);
-      } else {
-        // don't really need to check but i guess it won't hurt
-        newPath = path.isAbsolute(paths)
-          ? path.resolve(paths)
-          : path.resolve(process.cwd(), paths);
-      }
+      // don't really need to check but i guess it won't hurt
+      newPath = path.isAbsolute(paths)
+        ? path.resolve(paths)
+        : path.resolve(process.cwd(), paths);
       break;
     case ".":
       newPath = path.resolve(process.cwd(), paths);
@@ -93,6 +83,14 @@ function handleCdCommand(paths: string): void {
       for (let i = 1; i < count; i++) {
         newPath = path.resolve(newPath, "..");
       }
+      break;
+    case "~":
+      const HOME = process.env.HOME;
+      if (HOME === undefined) {
+        console.log("cd: $HOME is not set");
+        return;
+      }
+      newPath = path.resolve(HOME);
       break;
     default:
       return;
