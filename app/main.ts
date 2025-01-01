@@ -19,14 +19,23 @@ const isTypeCommand = (input: string) => input === BUILTIN_COMMANDS[2];
 const isPwdCommand = (input: string) => input === BUILTIN_COMMANDS[3];
 const isCdCommand = (input: string) => input === BUILTIN_COMMANDS[4];
 
-function executeProgram(command: string, args: string[]): void {
+function executeProgram(command: string, args: string): void {
+  console.log("command: ", command, "args: ", args);
+
   if (command === "cat") {
-    for (let arg of args) {
+    // split by quotes for multiple arguments
+    const argsArray = args.split(/['"]/).filter((arg) => arg.trim() !== "");
+    console.log("argsArray", argsArray);
+    for (let arg of argsArray) {
       arg = parseCatQuotes(arg);
     }
+    console.log("final args: ", args);
+    // args = argsArray.join(" ");
   }
   try {
-    const output = execSync(`${command} ${args.join(" ")}`, { stdio: "pipe" });
+    const output = execSync(`${command} ${args}`, {
+      stdio: "pipe",
+    });
     console.log(output.toString().trim());
   } catch (error: any) {
     console.log(`${command}: command not found`);
@@ -108,8 +117,26 @@ function parseEchoQuotes(answer: string): void {
 }
 
 function parseCatQuotes(input: string): string {
-  return input.replace(/'| |"/g, "");
+  // return input.replace(/'| |"/g, "");
+  let escape = false;
+  let result = "";
+
+  for (let char of input) {
+    if (escape) {
+      result += char;
+      escape = false;
+      // check if the next char is a backslash
+    } else if (char === "\\") {
+      escape = true;
+    } else if (char !== "'" && char !== '"') {
+      result += char;
+    }
+  }
+
+  console.log("Parsed string:", result);
+  return result;
 }
+
 // only takes one argument like posix POSIX-compliant shells
 function handleCdCommand(paths: string): void {
   const beforeSlash = paths.split("/")[0];
@@ -181,7 +208,7 @@ function main(): void {
     } else if (isCdCommand(command)) {
       handleCdCommand(restArgsStr);
     } else {
-      executeProgram(command, restArgs);
+      executeProgram(command, restArgsStr);
     }
 
     main();

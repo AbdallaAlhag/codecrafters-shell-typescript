@@ -6,6 +6,8 @@
 #
 # Learn more: https://codecrafters.io/program-interface
 
+echo "Running your program locally..."
+
 set -e # Exit early if any commands fail
 
 # Copied from .codecrafters/run.sh
