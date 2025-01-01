@@ -21,7 +21,7 @@ const isCdCommand = (input: string) => input === BUILTIN_COMMANDS[4];
 function executeProgram(command: string, args: string[]): void {
   if (command === "cat") {
     for (let arg of args) {
-      arg = parseCatSingleQuotes(arg);
+      arg = parseCatQuotes(arg);
     }
   }
   try {
@@ -67,7 +67,7 @@ function handlePath(command: string): void {
 }
 
 function parseEchoQuotes(input: string): void {
-  if (input === '"') {
+  if (input.includes('"')) {
     input = input.replace(/"/g, "");
     console.log(input);
     return;
