@@ -75,7 +75,7 @@ function parseEchoSingleQuotes(input: string): void {
       .split(" ")
       .filter((x) => x !== "")
       .join(" ");
-    console.log("input", arr);
+    console.log(arr);
   }
 }
 
