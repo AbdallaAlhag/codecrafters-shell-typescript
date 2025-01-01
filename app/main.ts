@@ -72,9 +72,12 @@ function parseEchoQuotes(answer: string): void {
 
   let stringArgs = answer.slice(5).trim();
   // console.log("stringArgs: ", stringArgs);
-  const hasDoubleQuotes = stringArgs.includes('"');
+  const startsAndEndsWithDoubleQuotes =
+    stringArgs.startsWith('"') && stringArgs.endsWith('"');
+  // const hasDoubleQuotes = stringArgs.match(/"/g)?.length === 2;
+  // const hasDoubleQuotes = stringArgs.includes('"');
 
-  if (hasDoubleQuotes) {
+  if (startsAndEndsWithDoubleQuotes) {
     const stringArgsArray = stringArgs.split('"');
     // console.log("stringArgsArray: ", stringArgsArray);
 
@@ -95,7 +98,8 @@ function parseEchoQuotes(answer: string): void {
   }
 
   // single quote
-  if (stringArgs.includes("'")) {
+  // if (stringArgs.includes("'")) {
+  if (stringArgs.startsWith("'") && stringArgs.endsWith("'")) {
     stringArgs = stringArgs.replace(/'/g, "");
     console.log(stringArgs);
   } else {
