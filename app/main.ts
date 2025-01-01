@@ -61,6 +61,9 @@ function handlePath(command: string): void {
   console.log(`${command}: not found`);
 }
 
+function parseSingleQuotes(input: string): string[] {
+  
+}
 // only takes one argument like posix POSIX-compliant shells
 function handleCdCommand(paths: string): void {
   const beforeSlash = paths.split("/")[0];
@@ -115,7 +118,8 @@ function main(): void {
       process.exit(0);
     }
     if (isEchoCommand(command)) {
-      console.log(restArgsStr);
+      parseSingleQuotes(restArgsStr);
+      // console.log(restArgsStr);
     } else if (isTypeCommand(command)) {
       // This was for builtin: builtins
       if (restArgsStr) {
