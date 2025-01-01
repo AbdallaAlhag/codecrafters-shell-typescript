@@ -66,7 +66,13 @@ function handlePath(command: string): void {
   console.log(`${command}: not found`);
 }
 
-function parseEchoSingleQuotes(input: string): void {
+function parseEchoQuotes(input: string): void {
+  if (input === '"') {
+    input = input.replace(/'/g, "");
+    console.log(input);
+    return;
+  }
+
   if (input.includes("'")) {
     input = input.replace(/'/g, "");
     console.log(input);
@@ -79,8 +85,8 @@ function parseEchoSingleQuotes(input: string): void {
   }
 }
 
-function parseCatSingleQuotes(input: string): string {
-  return input.replace(/'| /g, "");
+function parseCatQuotes(input: string): string {
+  return input.replace(/'| |"/g, "");
 }
 // only takes one argument like posix POSIX-compliant shells
 function handleCdCommand(paths: string): void {
@@ -136,7 +142,7 @@ function main(): void {
       process.exit(0);
     }
     if (isEchoCommand(command)) {
-      parseEchoSingleQuotes(restArgsStr);
+      parseEchoQuotes(restArgsStr);
       // console.log(restArgsStr);
     } else if (isTypeCommand(command)) {
       // This was for builtin: builtins
