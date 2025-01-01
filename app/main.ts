@@ -66,24 +66,26 @@ function handlePath(command: string): void {
   console.log(`${command}: not found`);
 }
 
-function parseEchoQuotes(input: string): void {
-  if (input.includes('"')) {
-    input = input.replace(/"/g, "");
-    const arr = input
-      .split(" ")
-      .filter((x) => x !== "")
-      .join(" ");
-    // console.log('arr: ', arr);
-    // console.log("input: ", input);
-    console.log(arr);
+function parseEchoQuotes(restArgs: string[]): void {
+  if (restArgs.includes('"')) {
+    const output: string[] = [];
+    for (let args of restArgs) {
+      args = args.replace(/"/g, "");
+      // console.log('arr: ', arr);
+      // console.log("input: ", input);
+      output.push(args);
+    }
+    console.log(output.join(" "));
     return;
   }
 
-  if (input.includes("'")) {
-    input = input.replace(/'/g, "");
-    console.log(input);
+  // single quote
+  let restArgsStr = restArgs.join(" ");
+  if (restArgsStr.includes("'")) {
+    restArgsStr = restArgsStr.replace(/'/g, "");
+    console.log(restArgsStr);
   } else {
-    const arr = input
+    const arr = restArgsStr
       .split(" ")
       .filter((x) => x !== "")
       .join(" ");
@@ -148,7 +150,7 @@ function main(): void {
       process.exit(0);
     }
     if (isEchoCommand(command)) {
-      parseEchoQuotes(restArgsStr);
+      parseEchoQuotes(restArgs);
       // console.log(restArgsStr);
     } else if (isTypeCommand(command)) {
       // This was for builtin: builtins
