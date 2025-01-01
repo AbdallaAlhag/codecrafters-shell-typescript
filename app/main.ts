@@ -70,7 +70,12 @@ function handleCdCommand(paths: string): void {
     case "":
       if (paths === "~") {
         // root directory
-        newPath = path.resolve("/");
+        const HOME = process.env.HOME;
+        if (HOME === undefined) {
+          console.log("cd: $HOME is not set");
+          return;
+        }
+        newPath = path.resolve(HOME);
       } else {
         // don't really need to check but i guess it won't hurt
         newPath = path.isAbsolute(paths)
