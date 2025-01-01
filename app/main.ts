@@ -78,7 +78,7 @@ function parseEchoQuotes(answer: string): void {
   // const hasDoubleQuotes = stringArgs.includes('"');
 
   if (startsAndEndsWithDoubleQuotes) {
-    const stringArgsArray = stringArgs.split('"');
+    const stringArgsArray = stringArgs.split('" ');
     // console.log("stringArgsArray: ", stringArgsArray);
 
     const output: string[] = [];
@@ -91,7 +91,7 @@ function parseEchoQuotes(answer: string): void {
 
       let escape = false;
       let result = "";
-
+      console.log(args);
       for (let char of args) {
         if (escape) {
           result += char;
