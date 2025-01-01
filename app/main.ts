@@ -69,7 +69,13 @@ function handlePath(command: string): void {
 function parseEchoQuotes(input: string): void {
   if (input.includes('"')) {
     input = input.replace(/"/g, "");
-    console.log(input);
+    const arr = input
+      .split(" ")
+      .filter((x) => x !== "")
+      .join(" ");
+    // console.log('arr: ', arr);
+    // console.log("input: ", input);
+    console.log(arr);
     return;
   }
 
