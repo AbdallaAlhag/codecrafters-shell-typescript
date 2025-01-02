@@ -21,7 +21,7 @@ const isPwdCommand = (input: string) => input === BUILTIN_COMMANDS[3];
 const isCdCommand = (input: string) => input === BUILTIN_COMMANDS[4];
 
 function executeProgram(command: string, args: string[]): void {
-  console.log(command, args);
+  // console.log(command, args);
   if (command === "cat") {
     for (let arg of args) {
       arg = parseCatQuotes(arg);
