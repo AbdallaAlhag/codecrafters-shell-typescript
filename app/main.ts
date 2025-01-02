@@ -3,6 +3,7 @@ import { createInterface } from "readline";
 import * as fs from "fs";
 import { execSync } from "child_process";
 import * as path from "path";
+import { error } from "console";
 
 const rl = createInterface({
   input: process.stdin,
@@ -20,10 +21,15 @@ const isPwdCommand = (input: string) => input === BUILTIN_COMMANDS[3];
 const isCdCommand = (input: string) => input === BUILTIN_COMMANDS[4];
 
 function executeProgram(command: string, args: string[]): void {
+  console.log(command, args);
   if (command === "cat") {
     for (let arg of args) {
       arg = parseCatQuotes(arg);
     }
+  }
+  if (args.includes(">") || args.includes("<")) {
+    handleRedirection(command, args);
+    return;
   }
   try {
     const output = execSync(`${command} ${args.join(" ")}`, { stdio: "pipe" });
@@ -31,6 +37,36 @@ function executeProgram(command: string, args: string[]): void {
   } catch (error: any) {
     console.log(`${command}: command not found`);
   }
+}
+
+function handleRedirection(command: string, args: string[]): void {
+  // takes 3 arguments
+  // [input, >, output]
+  // 1. command -> execute it
+  // 2. input file to execute it on
+  // 3. output file to redirect it to
+
+  try {
+    // args[0] is our input file to execute the command on
+    const output = execSync(`${command} ${args[0]}`, { stdio: "pipe" });
+    fs.writeFile(
+      args[2],
+      output.toString().trim(),
+      { encoding: "utf-8" },
+      (err) => {
+        if (err) {
+          console.log(`${command}: ${args[2]}: No such file or directory`);
+          return;
+        }
+        // console.log(`${command} ${args[0]} > ${args[2]}`);
+      }
+    );
+  } catch (error: any) {
+    console.log(`${command}: command not found`);
+  }
+  // const input = execSync(`${args.join(" ")}`, { stdio: "pipe" });
+  // const output = execSync(`${command} ${args.join(" ")}`, { stdio: "pipe" });
+  // console.log(output.toString().trim());
 }
 
 function handleBuiltinCommand(restArgsStr: string): void {
