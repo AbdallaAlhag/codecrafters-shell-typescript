@@ -27,7 +27,9 @@ function executeProgram(command: string, args: string[]): void {
       arg = parseCatQuotes(arg);
     }
   }
+  console.log(command, args);
   if (args.includes(">") || args.includes("1>")) {
+    console.log("hi");
     handleRedirection(command, args);
     return;
   }
@@ -106,8 +108,25 @@ function handlePath(command: string): void {
 function parseEchoQuotes(answer: string): void {
   // console.log("answer: ", answer);
 
+  let redirect = false;
+  let file = "";
   let stringArgs = answer.slice(5).trim();
+  let outputResult = "";
   // console.log("stringArgs: ", stringArgs);
+
+  // check for redirection
+  if (stringArgs.includes(">") || stringArgs.includes("1>")) {
+    redirect = true;
+    let temp = stringArgs;
+    if (stringArgs.includes("1>")) {
+      stringArgs = stringArgs.slice(0, stringArgs.indexOf("1>"));
+      file = temp.slice(temp.indexOf("1>") + 1);
+    } else if (stringArgs.includes(">")) {
+      stringArgs = stringArgs.slice(0, stringArgs.indexOf(">"));
+      file = temp.slice(temp.indexOf(">") + 1);
+    }
+  }
+
   const startsAndEndsWithDoubleQuotes =
     stringArgs.startsWith('"') && stringArgs.endsWith('"');
   // const hasDoubleQuotes = stringArgs.match(/"/g)?.length === 2;
@@ -115,6 +134,7 @@ function parseEchoQuotes(answer: string): void {
 
   if (startsAndEndsWithDoubleQuotes) {
     const stringArgsArray = stringArgs.split('" ');
+
     // console.log("stringArgsArray: ", stringArgsArray);
 
     const output: string[] = [];
@@ -142,28 +162,28 @@ function parseEchoQuotes(answer: string): void {
 
       // output.push(args);
       output.push(result);
+      outputResult = output.join(" ");
     }
-    console.log(output.join(" "));
-    return;
   }
 
   // single quote
   // if (stringArgs.includes("'")) {
   if (stringArgs.startsWith("'") && stringArgs.endsWith("'")) {
-    stringArgs = stringArgs.replace(/'/g, "");
-    console.log(stringArgs);
+    const output = stringArgs.replace(/'/g, "");
+    outputResult = output;
   } else {
     // const arr = stringArgs
     //   .split(" ")
     //   .filter((x) => x !== "")
     //   .join(" ");
+
     let escape = false;
     let space = false;
-    let result = "";
+    let output = "";
 
     for (let char of stringArgs) {
       if (escape) {
-        result += char;
+        output += char;
         escape = false;
         // check if the next char is a backslash
       } else if (char === "\\") {
@@ -171,17 +191,25 @@ function parseEchoQuotes(answer: string): void {
       } else if (char === " ") {
         space = true;
       } else if (space) {
-        result += " ";
+        output += " ";
         space = false;
         if (char !== "'" && char !== '"' && char !== " ") {
-          result += char;
+          output += char;
         }
       } else if (char !== "'" && char !== '"' && char !== " ") {
-        result += char;
+        output += char;
       }
     }
-
-    console.log(result);
+    outputResult = output;
+  }
+  if (!redirect) {
+    console.log(outputResult);
+  } else {
+    try {
+      fs.writeFileSync(file, outputResult);
+    } catch (err) {
+      console.log(`cat: ${outputResult}: No such file or directory`);
+    }
   }
 }
 
