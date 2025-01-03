@@ -118,10 +118,13 @@ function parseEchoQuotes(answer: string): void {
     let temp = stringArgs;
     if (stringArgs.includes("1>")) {
       stringArgs = stringArgs.slice(0, stringArgs.indexOf("1>"));
-      file = temp.slice(temp.indexOf("1>") + 1);
-    } else if (stringArgs.includes(">")) {
+      file = temp.slice(temp.indexOf("1>") + 2);
+
+      // } else if (stringArgs.includes(">")) {
+    } else {
       stringArgs = stringArgs.slice(0, stringArgs.indexOf(">"));
       file = temp.slice(temp.indexOf(">") + 1);
+      console.log("file: ", file);
     }
   }
 
@@ -206,7 +209,7 @@ function parseEchoQuotes(answer: string): void {
     try {
       fs.writeFileSync(file, outputResult);
     } catch (err) {
-      console.log(`cat: ${outputResult}: No such file or directory`);
+      console.log(`cat: ${file}: No such file or directory`);
     }
   }
 }
