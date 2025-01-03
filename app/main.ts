@@ -33,13 +33,9 @@ function executeProgram(command: string, args: string[]): void {
   }
   try {
     const file = path.resolve(args.join(" ").trim().replace(/^\/+/, ""));
-    console.log('file: ', file);
+    // console.log("file: ", file);
     // const file = path.resolve(process.cwd(), args.join(" ").trim());
 
-    // if (!fs.existsSync(file)) {
-    //   console.log(`${command}: ${file}: No such file or directory`);
-    //   return;
-    // }
     // const output = execSync(`${command} ${args.join(" ").trim()}`, {
     const output = execSync(`${command} ${file}`, {
       stdio: "pipe",
@@ -71,28 +67,31 @@ function handleRedirection(command: string, args: string[]): void {
   for (let arg of input) {
     // const file = path.resolve(arg.trim());
     // remove leading slashes
-    const file = path.resolve(arg.trim().replace(/^\/+/, ""));
+    const file = arg.trim().replace(/^\/+/, "");
+    // const file = arg.trim()
 
-    const dir = path.dirname(file);
+    // const inputDir = path.dirname(file);
+    const outputPath = output.join(" ").trim().replace(/^\/+/, "");
+    // const outputPath = output.join(" ").trim();
+
+    const outputDir = path.dirname(outputPath);
+    // console.log("outputDir: ", [outputDir]);
     // Ensure the directory exists
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    // File doesn't exist, create it with empty content first
+    if (!fs.existsSync(outputPath)) {
+      fs.closeSync(fs.openSync(outputPath, "w"));
     }
     try {
-      const output = execSync(`${command} ${file}`, { stdio: "pipe" });
-      try {
-        fs.writeFileSync(
-          output.join(" ").trim(),
-          execSync(`${command} ${file}`).toString(),
-          { encoding: "utf-8" }
-        );
-      } catch (err) {
-        console.log(
-          `${command}: ${args[2]}: No such file or directory to write`
-        );
-      }
-    } catch (error: any) {
-      console.log(`${command}: ${arg}: No such file or directory to read`);
+      const res = execSync(`${command} ${file}`, { encoding: "utf-8" });
+      //
+      fs.writeFileSync(outputPath, res);
+    } catch (err) {
+      console.log(
+        `${command}: ${outputPath}: No such file or directory`
+      );
     }
   }
 }
