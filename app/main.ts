@@ -32,7 +32,7 @@ function executeProgram(command: string, args: string[]): void {
     return;
   }
   try {
-    const file = path.resolve(args.join(" ").trim());
+    const file = path.resolve(process.cwd(), args.join(" ").trim());
     if (!fs.existsSync(file)) {
       console.log(`${command}: ${file}: No such file or directory`);
       return;
@@ -66,7 +66,7 @@ function handleRedirection(command: string, args: string[]): void {
   // console.log("input: ", input, " output: ", output);
   // console.log(command, args);
   for (let arg of input) {
-    const file = path.resolve(arg.trim());
+    const file = path.resolve(process.cwd(), arg.trim());
 
     try {
       const output = execSync(`${command} ${file}`, { stdio: "pipe" });
@@ -223,7 +223,7 @@ function parseEchoQuotes(answer: string): void {
   if (!redirect) {
     console.log(outputResult);
   } else {
-    file = path.resolve(file.trim());
+    file = path.resolve(process.cwd(), file.trim());
 
     const dir = path.dirname(file);
     // Ensure the directory exists
