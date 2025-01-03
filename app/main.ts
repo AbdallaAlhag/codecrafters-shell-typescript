@@ -32,7 +32,9 @@ function executeProgram(command: string, args: string[]): void {
     return;
   }
   try {
-    const output = execSync(`${command} ${args.join(" ")}`, { stdio: "pipe" });
+    const output = execSync(`${command} ${args.join(" ").trim()}`, {
+      stdio: "pipe",
+    });
     console.log(output.toString().trim());
   } catch (error: any) {
     console.log(`${command}: command not found`);
