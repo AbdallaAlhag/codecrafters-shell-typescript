@@ -48,8 +48,9 @@ function handleRedirection(command: string, args: string[]): void {
 
   // console.log(command, args);
   try {
+    const file = path.resolve(args[0]);
     // args[0] is our input file to execute the command on
-    const output = execSync(`${command} ${args[0]}`, { stdio: "pipe" });
+    const output = execSync(`${command} ${file}`, { stdio: "pipe" });
     fs.writeFile(
       args[2],
       output.toString().trim(),
