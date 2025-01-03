@@ -32,7 +32,7 @@ function executeProgram(command: string, args: string[]): void {
     return;
   }
   try {
-    const file = path.resolve(process.cwd(), args[0].trim());
+    const file = path.resolve(process.cwd(), args[0]);
     if (!fs.existsSync(file)) {
       console.log(`${command}: ${file}: No such file or directory`);
       return;
