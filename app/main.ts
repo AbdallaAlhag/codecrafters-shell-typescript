@@ -19,12 +19,26 @@ const isTypeCommand = (input: string) => input === BUILTIN_COMMANDS[2];
 const isPwdCommand = (input: string) => input === BUILTIN_COMMANDS[3];
 const isCdCommand = (input: string) => input === BUILTIN_COMMANDS[4];
 
-function executeProgram(command: string, args: string[]): void {
+// function executeProgram(command: string, args: string[]): void {
+function executeProgram(answer: string): void {
+  let command!: string, args!: string[];
+  const firstChar = answer[0];
+  if (firstChar === "'" || firstChar === '"') {
+    const lastCharIndex = answer.lastIndexOf(firstChar);
+    command = answer.slice(1, lastCharIndex);
+    args = answer
+      .slice(lastCharIndex + 1)
+      .trim()
+      .split(" ");
+    console.log(command, args);
+    // answer = `${command} ${args.join(" ")}`;
+  } else {
+    [command, ...args] = answer.split(" ");
+  }
+
   // console.log(command, args);
   if (command === "cat") {
-    for (let arg of args) {
-      arg = parseCatQuotes(arg);
-    }
+    args.map((arg) => parseCatQuotes(arg));
   }
   // console.log(args.join(" "));
   if (args.includes(">") || args.includes("1>")) {
@@ -339,7 +353,7 @@ function main(): void {
     } else if (isCdCommand(command)) {
       handleCdCommand(restArgsStr);
     } else {
-      executeProgram(command, restArgs);
+      executeProgram(answer);
     }
 
     main();
