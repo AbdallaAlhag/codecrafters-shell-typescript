@@ -27,7 +27,7 @@ function executeProgram(command: string, args: string[]): void {
       arg = parseCatQuotes(arg);
     }
   }
-  console.log(args.join(" "));
+  // console.log(args.join(" "));
   if (args.includes(">") || args.includes("1>")) {
     handleRedirection(command, args);
     return;
