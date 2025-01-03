@@ -32,7 +32,9 @@ function executeProgram(command: string, args: string[]): void {
     return;
   }
   try {
-    const output = execSync(`${command} ${args.join(" ").trim()}`, {
+    const file = path.resolve(args.join(" ").trim());
+    // const output = execSync(`${command} ${args.join(" ").trim()}`, {
+    const output = execSync(`${command} ${file}`, {
       stdio: "pipe",
     });
     console.log(output.toString().trim());
