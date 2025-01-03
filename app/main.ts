@@ -73,7 +73,6 @@ function handleRedirection(command: string, args: string[]): void {
         (err) => {
           if (err) {
             console.log(`${command}: ${args[2]}: No such file or directory`);
-            return;
           }
           // console.log(`${command} ${args[0]} > ${args[2]}`);
         }
