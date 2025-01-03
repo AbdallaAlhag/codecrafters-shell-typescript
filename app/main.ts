@@ -67,11 +67,11 @@ function handleRedirection(command: string, args: string[]): void {
   for (let arg of input) {
     // const file = path.resolve(arg.trim());
     // remove leading slashes
-    const file = arg.trim().replace(/^\/+/, "");
+    const file = arg.trim()//.replace(/^\/+/, "");
     // const file = arg.trim()
 
     // const inputDir = path.dirname(file);
-    const outputPath = output.join(" ").trim().replace(/^\/+/, "");
+    const outputPath = output.join(" ")//.trim().replace(/^\/+/, "");
     // const outputPath = output.join(" ").trim();
 
     const outputDir = path.dirname(outputPath);
