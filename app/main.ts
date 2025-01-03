@@ -207,9 +207,9 @@ function parseEchoQuotes(answer: string): void {
     console.log(outputResult);
   } else {
     try {
-      fs.writeFileSync(file, outputResult);
+      fs.writeFileSync(file, outputResult, "utf8");
     } catch (err) {
-      console.log(`cat: ${file}: No such file or directory`);
+      console.log(`echo: ${file}: No such file or directory`);
     }
   }
 }
