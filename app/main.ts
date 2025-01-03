@@ -32,7 +32,8 @@ function executeProgram(command: string, args: string[]): void {
     return;
   }
   try {
-    const file = path.resolve(args.join(" ").trim().replace(/^\/+/, ""));
+    // const file = path.resolve(args.join(" ").trim().replace(/^\/+/, ""));
+    const file = path.resolve(args.join(" ").trim());
     // console.log("file: ", file);
     // const file = path.resolve(process.cwd(), args.join(" ").trim());
 
@@ -67,11 +68,11 @@ function handleRedirection(command: string, args: string[]): void {
   for (let arg of input) {
     // const file = path.resolve(arg.trim());
     // remove leading slashes
-    const file = arg.trim()//.replace(/^\/+/, "");
+    const file = arg.trim(); //.replace(/^\/+/, "");
     // const file = arg.trim()
 
     // const inputDir = path.dirname(file);
-    const outputPath = output.join(" ")//.trim().replace(/^\/+/, "");
+    const outputPath = output.join(" "); //.trim().replace(/^\/+/, "");
     // const outputPath = output.join(" ").trim();
 
     const outputDir = path.dirname(outputPath);
@@ -89,9 +90,7 @@ function handleRedirection(command: string, args: string[]): void {
       //
       fs.writeFileSync(outputPath, res);
     } catch (err) {
-      console.log(
-        `${command}: ${outputPath}: No such file or directory`
-      );
+      console.log(`${command}: ${outputPath}: No such file or directory`);
     }
   }
 }
