@@ -27,7 +27,7 @@ function executeProgram(answer: string): void {
   if (match) {
     const command = match[2]; // Extract command enclosed in quotes
     const args = match[3].split(/\s+/); // Split remaining string into args
-    console.log(command, args);
+    // console.log(command, args);
   } else {
     [command, ...args] = answer.split(/\s+/); // Fallback for commands without quotes
   }
