@@ -32,11 +32,11 @@ function executeProgram(command: string, args: string[]): void {
     return;
   }
   try {
-    const file = path.resolve(args.join(" ").trim());
-    // if (!fs.existsSync(file)) {
-    //   console.log(`${command}: ${file}: No such file or directory`);
-    //   return;
-    // }
+    const file = path.resolve(process.cwd(), args[0].trim());
+    if (!fs.existsSync(file)) {
+      console.log(`${command}: ${file}: No such file or directory`);
+      return;
+    }
     // const output = execSync(`${command} ${args.join(" ").trim()}`, {
     const output = execSync(`${command} ${file}`, {
       stdio: "pipe",
