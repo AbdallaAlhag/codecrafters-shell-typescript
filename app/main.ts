@@ -22,19 +22,28 @@ const isCdCommand = (input: string) => input === BUILTIN_COMMANDS[4];
 // function executeProgram(command: string, args: string[]): void {
 function executeProgram(answer: string): void {
   let command!: string, args!: string[];
-  const firstChar = answer[0];
-  if (firstChar === "'" || firstChar === '"') {
-    const lastCharIndex = answer.lastIndexOf(firstChar);
-    command = answer.slice(1, lastCharIndex);
-    args = answer
-      .slice(lastCharIndex + 1)
-      .trim()
-      .split(" ");
+
+  const match = answer.match(/^(['"])(.+?)\1\s*(.*)/);
+  if (match) {
+    const command = match[2]; // Extract command enclosed in quotes
+    const args = match[3].split(/\s+/); // Split remaining string into args
     // console.log(command, args);
-    // answer = `${command} ${args.join(" ")}`;
   } else {
-    [command, ...args] = answer.split(" ");
+    [command, ...args] = answer.split(/\s+/); // Fallback for commands without quotes
   }
+  // const firstChar = answer[0];
+  // if (firstChar === "'" || firstChar === '"') {
+  //   const lastCharIndex = answer.lastIndexOf(firstChar);
+  //   command = answer.slice(1, lastCharIndex);
+  //   args = answer
+  //     .slice(lastCharIndex + 1)
+  //     .trim()
+  //     .split(" ");
+  //   // console.log(command, args);
+  //   // answer = `${command} ${args.join(" ")}`;
+  // } else {
+  //   [command, ...args] = answer.split(" ");
+  // }
 
   // console.log(command, args);
   if (command === "cat") {
