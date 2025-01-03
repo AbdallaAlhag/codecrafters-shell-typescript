@@ -3,7 +3,6 @@ import { createInterface } from "readline";
 import * as fs from "fs";
 import { execSync } from "child_process";
 import * as path from "path";
-import { error } from "console";
 
 const rl = createInterface({
   input: process.stdin,
@@ -47,6 +46,7 @@ function handleRedirection(command: string, args: string[]): void {
   // 2. input file to execute it on
   // 3. output file to redirect it to
 
+  console.log(command, args);
   try {
     // args[0] is our input file to execute the command on
     const output = execSync(`${command} ${args[0]}`, { stdio: "pipe" });
@@ -125,7 +125,6 @@ function parseEchoQuotes(answer: string): void {
     } else {
       stringArgs = stringArgs.slice(0, stringArgs.indexOf(">"));
       file = temp.slice(temp.indexOf(">") + 1);
-      console.log("file: ", file);
     }
   }
 
@@ -207,10 +206,19 @@ function parseEchoQuotes(answer: string): void {
   if (!redirect) {
     console.log(outputResult);
   } else {
+    console.log("made it");
+    file = path.resolve(file.trim());
+
+    const dir = path.dirname(file);
+    // Ensure the directory exists
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
     try {
       fs.writeFileSync(file, outputResult, "utf8");
     } catch (err) {
-      // console.log(`echo: ${file}: No such file or directory`);
+      console.log(`echo: ${file}: No such file or directory`);
     }
   }
 }
