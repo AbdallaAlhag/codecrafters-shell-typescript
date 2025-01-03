@@ -30,7 +30,7 @@ function executeProgram(answer: string): void {
       .slice(lastCharIndex + 1)
       .trim()
       .split(" ");
-    console.log(command, args);
+    // console.log(command, args);
     // answer = `${command} ${args.join(" ")}`;
   } else {
     [command, ...args] = answer.split(" ");
