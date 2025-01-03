@@ -206,7 +206,6 @@ function parseEchoQuotes(answer: string): void {
   if (!redirect) {
     console.log(outputResult);
   } else {
-    console.log("made it");
     file = path.resolve(file.trim());
 
     const dir = path.dirname(file);
