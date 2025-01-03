@@ -32,11 +32,14 @@ function executeProgram(command: string, args: string[]): void {
     return;
   }
   try {
-    const file = path.resolve(process.cwd(), args[0]);
-    if (!fs.existsSync(file)) {
-      console.log(`${command}: ${file}: No such file or directory`);
-      return;
-    }
+    const file = path.resolve(args.join(" ").trim().replace(/^\/+/, ""));
+    console.log('file: ', file);
+    // const file = path.resolve(process.cwd(), args.join(" ").trim());
+
+    // if (!fs.existsSync(file)) {
+    //   console.log(`${command}: ${file}: No such file or directory`);
+    //   return;
+    // }
     // const output = execSync(`${command} ${args.join(" ").trim()}`, {
     const output = execSync(`${command} ${file}`, {
       stdio: "pipe",
@@ -66,23 +69,30 @@ function handleRedirection(command: string, args: string[]): void {
   // console.log("input: ", input, " output: ", output);
   // console.log(command, args);
   for (let arg of input) {
-    const file = path.resolve(arg.trim());
+    // const file = path.resolve(arg.trim());
+    // remove leading slashes
+    const file = path.resolve(arg.trim().replace(/^\/+/, ""));
 
+    const dir = path.dirname(file);
+    // Ensure the directory exists
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
     try {
       const output = execSync(`${command} ${file}`, { stdio: "pipe" });
-      fs.writeFile(
-        args[2],
-        output.toString().trim(),
-        { encoding: "utf-8" },
-        (err) => {
-          if (err) {
-            console.log(`${command}: ${args[2]}: No such file or directory`);
-          }
-          // console.log(`${command} ${args[0]} > ${args[2]}`);
-        }
-      );
+      try {
+        fs.writeFileSync(
+          output.join(" ").trim(),
+          execSync(`${command} ${file}`).toString(),
+          { encoding: "utf-8" }
+        );
+      } catch (err) {
+        console.log(
+          `${command}: ${args[2]}: No such file or directory to write`
+        );
+      }
     } catch (error: any) {
-      console.log(`${command}: ${arg}: No such file or directory`);
+      console.log(`${command}: ${arg}: No such file or directory to read`);
     }
   }
 }
