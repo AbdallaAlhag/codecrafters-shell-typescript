@@ -90,7 +90,7 @@ function handleRedirection(command: string, args: string[]): void {
       //
       fs.writeFileSync(outputPath, res);
     } catch (err) {
-      console.log(`${command}: ${outputPath}: No such file or directory`);
+      // console.log(`${command}: ${outputPath}: No such file or directory`);
     }
   }
 }
