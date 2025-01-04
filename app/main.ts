@@ -53,13 +53,15 @@ function executeProgram(answer: string): void {
       (arg) => arg === ">" || arg === "1>"
     );
 
+
     if (redirectionIndex !== -1) {
       // Separate arguments and output file for redirection
       outputFile = args[redirectionIndex + 1]; // Get the file for redirection
       args = args.slice(0, redirectionIndex); // Get all arguments before the redirection
     }
 
-    if (redirection) {
+    if (redirection !== -1) {
+      console.log("Redirection detected");
       handleRedirection(command, args);
       return;
     }
@@ -70,34 +72,11 @@ function executeProgram(answer: string): void {
     // Resolve paths for arguments and check for file existence
     const resolvedFiles = args.map((arg) => path.resolve(arg.trim()));
 
-    // Check if the input file(s) exist
-    for (const file of resolvedFiles) {
-      if (!fs.existsSync(file)) {
-        console.log(`${command}: ${file}: No such file or directory`);
-        return;
-      }
-    }
-
-    // If redirection exists, handle the redirection separately
-    if (outputFile) {
-      const resolvedOutputFile = path.resolve(outputFile.trim());
-      if (!fs.existsSync(path.dirname(resolvedOutputFile))) {
-        fs.mkdirSync(path.dirname(resolvedOutputFile), { recursive: true });
-      }
-
-      // Perform the cat command and redirect output to the file
-      const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
-        encoding: "utf-8",
-      });
-      fs.writeFileSync(resolvedOutputFile, result);
-      console.log(`Output written to ${resolvedOutputFile}`);
-    } else {
-      // If no redirection, just print output
-      const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
-        encoding: "utf-8",
-      });
-      console.log(result.trim());
-    }
+    // If no redirection, just print output
+    const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
+      encoding: "utf-8",
+    });
+    // console.log(result.trim());
   } catch (error: any) {
     console.log(`${command}: command not found`);
   }
