@@ -24,6 +24,7 @@ const isCdCommand = (input: string) => input === BUILTIN_COMMANDS[4];
 function executeProgram(answer: string): void {
   let command: string | undefined;
   let args: string[] = [];
+  let outputFile: string | undefined;
 
   try {
     // Parse the command and arguments safely using shell-quote
@@ -39,54 +40,52 @@ function executeProgram(answer: string): void {
       console.log("Error: No command provided");
       return;
     }
-    if (command === "cat") {
-      args.map((arg) => parseCatQuotes(arg));
-    }
-    // console.log("Parsed Command:", command);
-    // console.log("Parsed Arguments:", args);
 
-    // console.log(args);
     // Handle redirection
-    const containsOperator = args.some(
-      (item) =>
-        (typeof item === "string" && (item === ">" || item === "1>")) ||
-        (typeof item === "object" &&
-          ["1>", ">"].includes((item as { op: string }).op as string))
+    const redirectionIndex = args.findIndex(
+      (arg) => arg === ">" || arg === "1>"
     );
 
-    if (containsOperator) {
-      handleRedirection(command, args);
-      return;
+    if (redirectionIndex !== -1) {
+      // Separate arguments and output file for redirection
+      outputFile = args[redirectionIndex + 1]; // Get the file for redirection
+      args = args.slice(0, redirectionIndex); // Get all arguments before the redirection
     }
 
-    // old check
-    // if (args.includes(">") || args.includes("1>")) {
-    //   handleRedirection(command, args);
-    //   return;
-    // }
+    console.log("Parsed Command:", command);
+    console.log("Parsed Arguments:", args);
 
-    // // Resolve paths for arguments
-    // const resolvedArgs = args.map((arg) =>
-    //   path.resolve(arg.trim().replace(/^\/+/, ""))
-    // );
+    // Resolve paths for arguments and check for file existence
+    const resolvedFiles = args.map((arg) => path.resolve(arg.trim()));
 
-    const file = args.map((arg) => path.resolve(arg.trim()));
-
-    if (!fs.existsSync(file[0])) {
-      console.log(
-        `${command}: ${file.find(
-          (f) => !fs.existsSync(f)
-        )}: No such file or directory`
-      );
-      return;
+    // Check if the input file(s) exist
+    for (const file of resolvedFiles) {
+      if (!fs.existsSync(file)) {
+        console.log(`${command}: ${file}: No such file or directory`);
+        return;
+      }
     }
 
-    // console.log("filepath: ", file);
-    // const output = execSync(`${command} ${args.join(" ").trim()}`, {
-    const output = execSync(`${command} ${file.join(" ")}`, {
-      stdio: "pipe",
-    });
-    console.log(output.toString().trim());
+    // If redirection exists, handle the redirection separately
+    if (outputFile) {
+      const resolvedOutputFile = path.resolve(outputFile.trim());
+      if (!fs.existsSync(path.dirname(resolvedOutputFile))) {
+        fs.mkdirSync(path.dirname(resolvedOutputFile), { recursive: true });
+      }
+
+      // Perform the cat command and redirect output to the file
+      const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
+        encoding: "utf-8",
+      });
+      fs.writeFileSync(resolvedOutputFile, result);
+      console.log(`Output written to ${resolvedOutputFile}`);
+    } else {
+      // If no redirection, just print output
+      const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
+        encoding: "utf-8",
+      });
+      console.log(result.trim());
+    }
   } catch (error: any) {
     console.log(`${command}: command not found`);
   }
