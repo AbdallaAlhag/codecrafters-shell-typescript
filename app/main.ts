@@ -48,11 +48,9 @@ function executeProgram(answer: string): void {
         (typeof arg === "object" && (arg as any).op === "1>")
     );
 
-
     const redirectionIndex = args.findIndex(
       (arg) => arg === ">" || arg === "1>"
     );
-
 
     if (redirectionIndex !== -1) {
       // Separate arguments and output file for redirection
@@ -99,15 +97,20 @@ function handleRedirection(command: string, args: string[]): void {
   const input = args.slice(0, opIndex); // Everything before the operator
   const output = args.slice(opIndex + 1); // Everything after the operator
 
-  // console.log("input: ", input, " output: ", output);
+  // console.log("input: ", input);
+  // console.log(" output: ", output);
   // console.log(command, args);
   for (let arg of input) {
+    if (arg == "1") {
+      continue;
+    }
+    // console.log(arg);
     // const file = path.resolve(arg.trim());
     // remove leading slashes
     const file = arg.trim(); //.replace(/^\/+/, "");
     // const file = arg.trim()
 
-    const inputPath = path.resolve(input.join(" "));
+    const inputPath = path.resolve(arg);
     const outputPath = path.resolve(output.join(" "));
 
     if (!fs.existsSync(inputPath)) {
