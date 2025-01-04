@@ -147,8 +147,14 @@ function handleRedirection(command: string, args: string[]): void {
     } catch (err) {
       if ((err as { code: string }).code === "ENOENT") {
         console.log(`${command}: ${inputPath}: No such file or directory`);
-      } else {
-        console.log(`${command}: command not found`);
+      }
+      // Handle other errors (e.g., command not found)
+      else if (err instanceof Error) {
+        console.log(`${command}: command not found: ${err.message}`);
+      }
+      // Default fallback if the error does not match above
+      else {
+        console.log(`${command}: An unknown error occurred`);
       }
     }
   }
