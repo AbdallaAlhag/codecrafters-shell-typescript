@@ -68,7 +68,8 @@ function executeProgram(answer: string): void {
     // console.log("Parsed Arguments:", args);
 
     if (command.includes(" ")) {
-      command = `"${command}"`;
+      //       command = `"${command}"`;
+      command = `'${command.replace(/"/g, '\\"')}'`;
     }
 
     // Resolve paths for arguments and check for file existence
