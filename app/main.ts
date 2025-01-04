@@ -53,16 +53,30 @@ function executeProgram(answer: string): void {
       console.log("Error: No command provided");
       return;
     }
-
+    // console.log("Parsed Command:", command);
+    // console.log("Parsed Arguments:", args);
     if (command === "cat") {
       args.map((arg) => parseCatQuotes(arg));
     }
 
     // Handle redirection
-    if (args.includes(">") || args.includes("1>")) {
+    const containsOperator = args.some(
+      (item) =>
+        (typeof item === "string" && (item === ">" || item === "1>")) ||
+        (typeof item === "object" &&
+          ["1>", ">"].includes((item as { op: string }).op as string))
+    );
+
+    if (containsOperator) {
       handleRedirection(command, args);
       return;
     }
+
+    // old check
+    // if (args.includes(">") || args.includes("1>")) {
+    //   handleRedirection(command, args);
+    //   return;
+    // }
 
     // // Resolve paths for arguments
     // const resolvedArgs = args.map((arg) =>
@@ -77,6 +91,7 @@ function executeProgram(answer: string): void {
     const file = args.map((arg) =>
       path.resolve(arg.trim().replace(/^\/+/, ""))
     );
+    // console.log(file);
     // const output = execSync(`${command} ${args.join(" ").trim()}`, {
     const output = execSync(`${command} ${file}`, {
       stdio: "pipe",
@@ -93,15 +108,31 @@ function handleRedirection(command: string, args: string[]): void {
   // 1. command -> execute it
   // 2. input file to execute it on
   // 3. output file to redirect it to
-  let input, output;
 
-  if (args.includes("1>")) {
-    input = args.slice(0, args.indexOf("1>"));
-    output = args.slice(args.indexOf("1>") + 1);
-  } else {
-    input = args.slice(0, args.indexOf(">"));
-    output = args.slice(args.indexOf(">") + 1);
-  }
+  const opIndex = args.findIndex(
+    (item) =>
+      (typeof item === "string" && (item === ">" || item === "1>")) ||
+      (typeof item === "object" &&
+        ["1>", ">"].includes((item as { op: string }).op))
+  );
+
+  const input = args.slice(0, opIndex); // Everything before the operator
+  const output = args.slice(opIndex + 1); // Everything after the operator
+
+  // console.log("Input:", input);
+  // console.log("Output:", output);
+
+  // const input = args.slice(0, args.indexOf(">"));
+  // const output = args.slice(args.indexOf(">") + 1);
+  // console.log("input: ", input);
+  // console.log("output: ", output);
+  // if (args.includes("1>")) {
+  //   input = args.slice(0, args.indexOf("1>"));
+  //   output = args.slice(args.indexOf("1>") + 1);
+  // } else {
+  //   input = args.slice(0, args.indexOf(">"));
+  //   output = args.slice(args.indexOf(">") + 1);
+  // }
 
   // console.log("input: ", input, " output: ", output);
   // console.log(command, args);
@@ -125,12 +156,14 @@ function handleRedirection(command: string, args: string[]): void {
     if (!fs.existsSync(outputPath)) {
       fs.closeSync(fs.openSync(outputPath, "w"));
     }
+
+    console.log(command, file, outputPath);
     try {
       const res = execSync(`${command} ${file}`, { encoding: "utf-8" });
       //
       fs.writeFileSync(outputPath, res);
     } catch (err) {
-      // console.log(`${command}: ${outputPath}: No such file or directory`);
+      console.log(`${command}: ${outputPath}: No such file or directory`);
     }
   }
 }
