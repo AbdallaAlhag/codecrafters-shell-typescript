@@ -145,7 +145,11 @@ function handleRedirection(command: string, args: string[]): void {
       }
       fs.writeFileSync(outputPath, result);
     } catch (err) {
-      console.error(`Error executing command: ${(err as Error).message}`);
+      if ((err as { code: string }).code === "ENOENT") {
+        console.log(`${command}: ${inputPath}: No such file or directory`);
+      } else {
+        console.log(`${command}: command not found`);
+      }
     }
   }
 }
