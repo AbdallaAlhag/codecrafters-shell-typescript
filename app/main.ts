@@ -94,7 +94,7 @@ function executeProgram(answer: string): void {
       return;
     }
 
-    console.log("filepath: ", file);
+    // console.log("filepath: ", file);
     // const output = execSync(`${command} ${args.join(" ").trim()}`, {
     const output = execSync(`${command} ${file.join(" ")}`, {
       stdio: "pipe",
