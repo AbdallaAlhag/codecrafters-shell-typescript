@@ -92,6 +92,15 @@ function executeProgram(answer: string): void {
       (arg) => path.resolve(arg.trim().replace(/^\/+/, ""))
       // arg.trim().replace(/^\/+/, "")
     );
+    if (!fs.existsSync(file[0])) {
+      console.log(
+        `${command}: ${file.find(
+          (f) => !fs.existsSync(f)
+        )}: No such file or directory`
+      );
+      return;
+    }
+
     console.log("filepath: ", file);
     // const output = execSync(`${command} ${args.join(" ").trim()}`, {
     const output = execSync(`${command} ${file}`, {
