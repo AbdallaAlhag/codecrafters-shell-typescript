@@ -110,11 +110,11 @@ function handleRedirection(command: string, args: string[]): void {
     const file = arg.trim(); //.replace(/^\/+/, "");
     // const file = arg.trim()
 
-    const inputPath = path.resolve(arg);
+    const inputPath = path.resolve(file);
     const outputPath = path.resolve(output.join(" "));
 
     if (!fs.existsSync(inputPath)) {
-      console.log(`${command}: ${inputPath}: No such file or directory`);
+      console.log(`${command}: ${file}: No such file or directory`);
       return;
     }
 
@@ -126,7 +126,7 @@ function handleRedirection(command: string, args: string[]): void {
       fs.writeFileSync(outputPath, result);
     } catch (err) {
       if ((err as { code: string }).code === "ENOENT") {
-        console.log(`${command}: ${arg}: No such file or directory`);
+        console.log(`${command}: ${file}: No such file or directory`);
       }
       // Handle other errors (e.g., command not found)
       else if (err instanceof Error) {
