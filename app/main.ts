@@ -42,6 +42,14 @@ function executeProgram(answer: string): void {
     }
 
     // Handle redirection
+    const redirection = args.findIndex(
+      (arg) =>
+        (typeof arg === "object" && (arg as any).op === ">") ||
+        (typeof arg === "object" && (arg as any).op === "1>")
+    );
+
+    console.log();
+
     const redirectionIndex = args.findIndex(
       (arg) => arg === ">" || arg === "1>"
     );
@@ -52,8 +60,13 @@ function executeProgram(answer: string): void {
       args = args.slice(0, redirectionIndex); // Get all arguments before the redirection
     }
 
-    // console.log("Parsed Command:", command);
-    // console.log("Parsed Arguments:", args);
+    if (redirection) {
+      handleRedirection(command, args);
+      return;
+    }
+
+    console.log("Parsed Command:", command);
+    console.log("Parsed Arguments:", args);
 
     // Resolve paths for arguments and check for file existence
     const resolvedFiles = args.map((arg) => path.resolve(arg.trim()));
