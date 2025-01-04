@@ -61,7 +61,7 @@ function executeProgram(answer: string): void {
     }
 
     if (redirection !== -1) {
-      console.log("Redirection detected");
+      // console.log("Redirection detected");
       handleRedirection(command, args);
       return;
     }
