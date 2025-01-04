@@ -96,7 +96,7 @@ function executeProgram(answer: string): void {
     const output = execSync(`${command} ${file}`, {
       stdio: "pipe",
     });
-    console.log(output.toString().trim());
+    // console.log(output.toString().trim());
   } catch (error: any) {
     console.log(`${command}: command not found`);
   }
