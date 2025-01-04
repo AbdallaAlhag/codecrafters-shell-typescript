@@ -89,8 +89,8 @@ function executeProgram(answer: string): void {
     // const file = path.resolve(args.join(" ").trim());
     // const file = path.resolve(process.cwd(), args.join(" ").trim());
     const file = args.map(
-      (arg) => path.resolve(arg.trim().replace(/^\/+/, ""))
-      // arg.trim().replace(/^\/+/, "")
+      // (arg) => path.resolve(arg.trim().replace(/^\/+/, ""))
+      (arg) => arg.trim().replace(/^\/+/, "")
     );
     if (!fs.existsSync(file[0])) {
       console.log(
