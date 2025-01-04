@@ -88,9 +88,9 @@ function executeProgram(answer: string): void {
     // working file ->
     // const file = path.resolve(args.join(" ").trim());
     // const file = path.resolve(process.cwd(), args.join(" ").trim());
-    const file = args.map((arg) =>
-      // path.resolve(arg.trim().replace(/^\/+/, ""))
-      arg.trim().replace(/^\/+/, "")
+    const file = args.map(
+      (arg) => path.resolve(arg.trim().replace(/^\/+/, ""))
+      // arg.trim().replace(/^\/+/, "")
     );
     console.log("filepath: ", file);
     // const output = execSync(`${command} ${args.join(" ").trim()}`, {
