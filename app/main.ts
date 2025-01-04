@@ -70,10 +70,13 @@ function executeProgram(answer: string): void {
     // );
 
     // const file = path.resolve(args.join(" ").trim().replace(/^\/+/, ""));
-    const file = path.resolve(args.join(" ").trim());
     // console.log("file: ", file);
+    // working file ->
+    // const file = path.resolve(args.join(" ").trim());
     // const file = path.resolve(process.cwd(), args.join(" ").trim());
-
+    const file = args.map((arg) =>
+      path.resolve(arg.trim().replace(/^\/+/, ""))
+    );
     // const output = execSync(`${command} ${args.join(" ").trim()}`, {
     const output = execSync(`${command} ${file}`, {
       stdio: "pipe",
