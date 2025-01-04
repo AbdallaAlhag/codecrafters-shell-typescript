@@ -76,7 +76,7 @@ function executeProgram(answer: string): void {
     const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
       encoding: "utf-8",
     });
-    // console.log(result.trim());
+    console.log(result.trim());
   } catch (error: any) {
     console.log(`${command}: command not found`);
   }
