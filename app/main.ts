@@ -25,20 +25,6 @@ function executeProgram(answer: string): void {
   let command: string | undefined;
   let args: string[] = [];
 
-  // const firstChar = answer[0];
-  // if (firstChar === "'" || firstChar === '"') {
-  //   const lastCharIndex = answer.lastIndexOf(firstChar);
-  //   command = answer.slice(1, lastCharIndex);
-  //   args = answer
-  //     .slice(lastCharIndex + 1)
-  //     .trim()
-  //     .split(" ");
-  //   // console.log(command, args);
-  //   // answer = `${command} ${args.join(" ")}`;
-  // } else {
-  //   [command, ...args] = answer.split(" ");
-  // }
-
   try {
     // Parse the command and arguments safely using shell-quote
     const parsed = parse(answer) as string[];
@@ -53,12 +39,13 @@ function executeProgram(answer: string): void {
       console.log("Error: No command provided");
       return;
     }
-    // console.log("Parsed Command:", command);
-    // console.log("Parsed Arguments:", args);
     if (command === "cat") {
       args.map((arg) => parseCatQuotes(arg));
     }
+    console.log("Parsed Command:", command);
+    console.log("Parsed Arguments:", args);
 
+    console.log(args);
     // Handle redirection
     const containsOperator = args.some(
       (item) =>
