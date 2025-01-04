@@ -92,7 +92,7 @@ function executeProgram(answer: string): void {
       // path.resolve(arg.trim().replace(/^\/+/, ""))
       arg.trim().replace(/^\/+/, "")
     );
-    // console.log(file);
+    console.log("filepath: ", file);
     // const output = execSync(`${command} ${args.join(" ").trim()}`, {
     const output = execSync(`${command} ${file}`, {
       stdio: "pipe",
