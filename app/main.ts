@@ -157,7 +157,7 @@ function handleRedirection(command: string, args: string[]): void {
       fs.closeSync(fs.openSync(outputPath, "w"));
     }
 
-    console.log(command, file, outputPath);
+    // console.log(command, file, outputPath);
     try {
       const res = execSync(`${command} ${file}`, { encoding: "utf-8" });
       //
