@@ -52,8 +52,8 @@ function executeProgram(answer: string): void {
       args = args.slice(0, redirectionIndex); // Get all arguments before the redirection
     }
 
-    console.log("Parsed Command:", command);
-    console.log("Parsed Arguments:", args);
+    // console.log("Parsed Command:", command);
+    // console.log("Parsed Arguments:", args);
 
     // Resolve paths for arguments and check for file existence
     const resolvedFiles = args.map((arg) => path.resolve(arg.trim()));
