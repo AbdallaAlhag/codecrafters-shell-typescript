@@ -83,15 +83,8 @@ function executeProgram(answer: string): void {
     //   path.resolve(arg.trim().replace(/^\/+/, ""))
     // );
 
-    // const file = path.resolve(args.join(" ").trim().replace(/^\/+/, ""));
-    // console.log("file: ", file);
-    // working file ->
-    // const file = path.resolve(args.join(" ").trim());
-    // const file = path.resolve(process.cwd(), args.join(" ").trim());
-    const file = args.map(
-      // (arg) => path.resolve(arg.trim().replace(/^\/+/, ""))
-      (arg) => arg.trim().replace(/^\/+/, "")
-    );
+    const file = args.map((arg) => path.resolve(arg.trim()));
+
     if (!fs.existsSync(file[0])) {
       console.log(
         `${command}: ${file.find(
@@ -103,7 +96,7 @@ function executeProgram(answer: string): void {
 
     console.log("filepath: ", file);
     // const output = execSync(`${command} ${args.join(" ").trim()}`, {
-    const output = execSync(`${command} ${file}`, {
+    const output = execSync(`${command} ${file.join(" ")}`, {
       stdio: "pipe",
     });
     console.log(output.toString().trim());
@@ -129,21 +122,6 @@ function handleRedirection(command: string, args: string[]): void {
   const input = args.slice(0, opIndex); // Everything before the operator
   const output = args.slice(opIndex + 1); // Everything after the operator
 
-  // console.log("Input:", input);
-  // console.log("Output:", output);
-
-  // const input = args.slice(0, args.indexOf(">"));
-  // const output = args.slice(args.indexOf(">") + 1);
-  // console.log("input: ", input);
-  // console.log("output: ", output);
-  // if (args.includes("1>")) {
-  //   input = args.slice(0, args.indexOf("1>"));
-  //   output = args.slice(args.indexOf("1>") + 1);
-  // } else {
-  //   input = args.slice(0, args.indexOf(">"));
-  //   output = args.slice(args.indexOf(">") + 1);
-  // }
-
   // console.log("input: ", input, " output: ", output);
   // console.log(command, args);
   for (let arg of input) {
@@ -152,28 +130,22 @@ function handleRedirection(command: string, args: string[]): void {
     const file = arg.trim(); //.replace(/^\/+/, "");
     // const file = arg.trim()
 
-    // const inputDir = path.dirname(file);
-    const outputPath = output.join(" "); //.trim().replace(/^\/+/, "");
-    // const outputPath = output.join(" ").trim();
+    const inputPath = path.resolve(input.join(" "));
+    const outputPath = path.resolve(output.join(" "));
 
-    const outputDir = path.dirname(outputPath);
-    // console.log("outputDir: ", [outputDir]);
-    // Ensure the directory exists
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
-    // File doesn't exist, create it with empty content first
-    if (!fs.existsSync(outputPath)) {
-      fs.closeSync(fs.openSync(outputPath, "w"));
+    if (!fs.existsSync(inputPath)) {
+      console.log(`${command}: ${inputPath}: No such file or directory`);
+      return;
     }
 
-    // console.log(command, file, outputPath);
     try {
-      const res = execSync(`${command} ${file}`, { encoding: "utf-8" });
-      //
-      fs.writeFileSync(outputPath, res);
+      const result = execSync(`${command} ${inputPath}`, { encoding: "utf-8" });
+      if (!fs.existsSync(path.dirname(outputPath))) {
+        fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+      }
+      fs.writeFileSync(outputPath, result);
     } catch (err) {
-      console.log(`${command}: ${outputPath}: No such file or directory`);
+      console.error(`Error executing command: ${(err as Error).message}`);
     }
   }
 }
