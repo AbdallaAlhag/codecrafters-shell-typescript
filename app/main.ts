@@ -3,6 +3,7 @@ import { createInterface } from "readline";
 import * as fs from "fs";
 import { execSync } from "child_process";
 import * as path from "path";
+import { parse } from "shell-quote";
 
 const rl = createInterface({
   input: process.stdin,
@@ -21,16 +22,9 @@ const isCdCommand = (input: string) => input === BUILTIN_COMMANDS[4];
 
 // function executeProgram(command: string, args: string[]): void {
 function executeProgram(answer: string): void {
-  let command!: string, args!: string[];
+  let command: string | undefined;
+  let args: string[] = [];
 
-  const match = answer.match(/^(['"])(.+?)\1\s*(.*)/);
-  if (match) {
-    const command = match[2]; // Extract command enclosed in quotes
-    const args = match[3].split(/\s+/); // Split remaining string into args
-    // console.log(command, args);
-  } else {
-    [command, ...args] = answer.split(/\s+/); // Fallback for commands without quotes
-  }
   // const firstChar = answer[0];
   // if (firstChar === "'" || firstChar === '"') {
   //   const lastCharIndex = answer.lastIndexOf(firstChar);
@@ -45,16 +39,36 @@ function executeProgram(answer: string): void {
   //   [command, ...args] = answer.split(" ");
   // }
 
-  // console.log(command, args);
-  if (command === "cat") {
-    args.map((arg) => parseCatQuotes(arg));
-  }
-  // console.log(args.join(" "));
-  if (args.includes(">") || args.includes("1>")) {
-    handleRedirection(command, args);
-    return;
-  }
   try {
+    // Parse the command and arguments safely using shell-quote
+    const parsed = parse(answer) as string[];
+
+    // Extract command and arguments
+    if (parsed.length > 0) {
+      command = parsed[0]; // The first element is the command
+      args = parsed.slice(1); // The rest are the arguments
+    }
+
+    if (!command) {
+      console.log("Error: No command provided");
+      return;
+    }
+
+    if (command === "cat") {
+      args.map((arg) => parseCatQuotes(arg));
+    }
+
+    // Handle redirection
+    if (args.includes(">") || args.includes("1>")) {
+      handleRedirection(command, args);
+      return;
+    }
+
+    // // Resolve paths for arguments
+    // const resolvedArgs = args.map((arg) =>
+    //   path.resolve(arg.trim().replace(/^\/+/, ""))
+    // );
+
     // const file = path.resolve(args.join(" ").trim().replace(/^\/+/, ""));
     const file = path.resolve(args.join(" ").trim());
     // console.log("file: ", file);
