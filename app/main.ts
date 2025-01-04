@@ -42,10 +42,10 @@ function executeProgram(answer: string): void {
     if (command === "cat") {
       args.map((arg) => parseCatQuotes(arg));
     }
-    console.log("Parsed Command:", command);
-    console.log("Parsed Arguments:", args);
+    // console.log("Parsed Command:", command);
+    // console.log("Parsed Arguments:", args);
 
-    console.log(args);
+    // console.log(args);
     // Handle redirection
     const containsOperator = args.some(
       (item) =>
