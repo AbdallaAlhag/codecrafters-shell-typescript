@@ -100,16 +100,18 @@ function executeProgram(answer: string): void {
   }
 }
 function parseCommand(command: string): string[] {
-  // This handles parsing of the quoted executable part and its arguments
-  return command.split(" ").map((part) => {
-    // Handling spaces and quotes properly
-    if (part.startsWith("'") && part.endsWith("'")) {
-      return part.slice(1, part.length - 1); // Remove surrounding single quotes
-    } else if (part.startsWith('"') && part.endsWith('"')) {
-      return part.slice(1, part.length - 1); // Remove surrounding double quotes
-    }
-    return part;
-  });
+  // Match the executable part inside quotes (either single or double quotes)
+  const regex = /'([^']+)'|\"([^\"]+)\"/g;
+  let match;
+  let executable = "";
+
+  // Find the executable part (it should be inside quotes)
+  while ((match = regex.exec(command)) !== null) {
+    // Use the first match (either single or double quote part)
+    executable = match[1] || match[2];
+  }
+
+  return executable.trim().split(/\s+/); // Return the executable as an array (after splitting by space)
 }
 
 function handleRedirection(command: string, args: string[]): void {
