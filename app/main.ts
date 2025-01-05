@@ -68,10 +68,12 @@ function executeProgram(answer: string): void {
     // console.log("Parsed Arguments:", args);
 
     if (command.includes(" ")) {
-      // command = `'${command}'`; 
-      
+      // command = `'${command}'`;
+
+      // If the command contains single quotes
       if (command.includes("'")) {
-        command = `'${command.replace(/'/g, '"\'"')}'`; 
+        // Escaping single quotes inside double quotes
+        command = `"${command.replace(/'/g, '"\'"')}"`;
       } else {
         command = `'${command}'`;
       }
