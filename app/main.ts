@@ -68,6 +68,12 @@ function executeProgram(answer: string): void {
     // console.log("Parsed Arguments:", args);
 
     if (command.includes(" ")) {
+      // Ensure backslashes are escaped properly in the command string
+      command = command.replace(/\\/g, "\\\\"); // Double the backslashes to escape them
+
+      // Handle nested quotes for commands wrapped in single quotes
+      command = command.replace(/'([^']+)'/g, '"$1"'); // Convert single quotes to double quotes
+
       command = `'${command}'`;
       // if (command.includes("'")) {
       //   // Replace single quotes within the command to handle them properly in shell
@@ -97,7 +103,6 @@ function executeProgram(answer: string): void {
     console.log(`${command}: command not found`);
   }
 }
-
 
 function handleRedirection(command: string, args: string[]): void {
   // takes 3 arguments
