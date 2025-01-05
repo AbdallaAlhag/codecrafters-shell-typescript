@@ -68,9 +68,16 @@ function executeProgram(answer: string): void {
     // console.log("Parsed Arguments:", args);
 
     if (command.includes(" ")) {
+      // command = `'${command}'`; 
+      
+      if (command.includes("'")) {
+        command = `'${command.replace(/'/g, '"\'"')}'`; 
+      } else {
+        command = `'${command}'`;
+      }
+
       //       command = `"${command}"`;
       // command = `'${command.replace(/"/g, '\\"')}'`;
-      command = `'${command}'`;
       // console.log("command: ", command);
       // const parsedCommand = parse(command);
       // command = parsedCommand.join(" ");
