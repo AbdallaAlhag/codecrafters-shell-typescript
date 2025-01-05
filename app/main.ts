@@ -68,9 +68,8 @@ function executeProgram(answer: string): void {
     // console.log("Parsed Arguments:", args);
 
     if (command.includes(" ")) {
-      // command = `'${command}'`;
       command = parseCommand(command).join(" ");
-
+      // command = `'${command}'`;
       // if (command.includes("'")) {
       //   // Replace single quotes within the command to handle them properly in shell
       //   command = `"${command.replace(/'/g, '"\'"')}"`; // Properly escape single quotes within double quotes
@@ -78,7 +77,6 @@ function executeProgram(answer: string): void {
       //   // If no single quotes, simply wrap the command in single quotes
       //   command = `'${command}'`;
       // }
-
       //       command = `"${command}"`;
       // command = `'${command.replace(/"/g, '\\"')}'`;
       // console.log("command: ", command);
@@ -100,10 +98,9 @@ function executeProgram(answer: string): void {
     console.log(`${command}: command not found`);
   }
 }
-
 function parseCommand(input: string) {
-  const args = [];
-  let currentArg = "";
+  const args: string[] = [];
+  let currentArg: string = "";
   let insideSingleQuote = false;
   let insideDoubleQuote = false;
   let escapeNextChar = false;
@@ -111,54 +108,56 @@ function parseCommand(input: string) {
   for (let i = 0; i < input.length; i++) {
     const char = input[i];
 
-    // Handle escape sequence (\)
+    // Handle escape character
     if (escapeNextChar) {
       currentArg += char;
       escapeNextChar = false;
       continue;
     }
 
-    // If we're inside a single quote, handle that
-    if (char === "'" && !insideDoubleQuote) {
-      if (insideSingleQuote) {
-        insideSingleQuote = false; // closing single quote
-      } else {
-        insideSingleQuote = true; // opening single quote
-      }
-      continue;
-    }
-
-    // If we're inside a double quote, handle that
-    if (char === '"' && !insideSingleQuote) {
-      if (insideDoubleQuote) {
-        insideDoubleQuote = false; // closing double quote
-      } else {
-        insideDoubleQuote = true; // opening double quote
-      }
-      continue;
-    }
-
-    // If the current character is a backslash, escape the next character
-    if (char === "\\" && !escapeNextChar) {
+    // Handle escape sequences (e.g., backslash)
+    if (char === "\\") {
       escapeNextChar = true;
       continue;
     }
 
-    // Handle spaces: If we're not inside quotes, treat space as a separator
-    if (char === " " && !insideSingleQuote && !insideDoubleQuote) {
-      if (currentArg.length > 0) {
+    // Handle single quotes
+    if (char === "'" && !insideDoubleQuote) {
+      insideSingleQuote = !insideSingleQuote;
+      if (!insideSingleQuote) {
+        // Close the current argument when a single quote closes
         args.push(currentArg);
         currentArg = "";
       }
       continue;
     }
 
-    // Append the current character to the argument
+    // Handle double quotes
+    if (char === '"' && !insideSingleQuote) {
+      insideDoubleQuote = !insideDoubleQuote;
+      if (!insideDoubleQuote) {
+        // Close the current argument when a double quote closes
+        args.push(currentArg);
+        currentArg = "";
+      }
+      continue;
+    }
+
+    // Handle spaces: only treat spaces as argument separators if we're not inside quotes
+    if (char === " " && !insideSingleQuote && !insideDoubleQuote) {
+      if (currentArg) {
+        args.push(currentArg);
+        currentArg = "";
+      }
+      continue;
+    }
+
+    // Add the character to the current argument
     currentArg += char;
   }
 
-  // Push the last argument if it exists
-  if (currentArg.length > 0) {
+  // Add the last argument if there is one
+  if (currentArg) {
     args.push(currentArg);
   }
 
