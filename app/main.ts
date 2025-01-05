@@ -69,6 +69,7 @@ function executeProgram(answer: string): void {
 
     if (command.includes(" ")) {
       command = parseCommand(command).join(" ");
+      console.log(command);
       // command = `'${command}'`;
       // if (command.includes("'")) {
       //   // Replace single quotes within the command to handle them properly in shell
@@ -98,70 +99,17 @@ function executeProgram(answer: string): void {
     console.log(`${command}: command not found`);
   }
 }
-function parseCommand(input: string) {
-  const args: string[] = [];
-  let currentArg: string = "";
-  let insideSingleQuote = false;
-  let insideDoubleQuote = false;
-  let escapeNextChar = false;
-
-  for (let i = 0; i < input.length; i++) {
-    const char = input[i];
-
-    // Handle escape character
-    if (escapeNextChar) {
-      currentArg += char;
-      escapeNextChar = false;
-      continue;
+function parseCommand(command: string): string[] {
+  // This handles parsing of the quoted executable part and its arguments
+  return command.split(" ").map((part) => {
+    // Handling spaces and quotes properly
+    if (part.startsWith("'") && part.endsWith("'")) {
+      return part.slice(1, part.length - 1); // Remove surrounding single quotes
+    } else if (part.startsWith('"') && part.endsWith('"')) {
+      return part.slice(1, part.length - 1); // Remove surrounding double quotes
     }
-
-    // Handle escape sequences (e.g., backslash)
-    if (char === "\\") {
-      escapeNextChar = true;
-      continue;
-    }
-
-    // Handle single quotes
-    if (char === "'" && !insideDoubleQuote) {
-      insideSingleQuote = !insideSingleQuote;
-      if (!insideSingleQuote) {
-        // Close the current argument when a single quote closes
-        args.push(currentArg);
-        currentArg = "";
-      }
-      continue;
-    }
-
-    // Handle double quotes
-    if (char === '"' && !insideSingleQuote) {
-      insideDoubleQuote = !insideDoubleQuote;
-      if (!insideDoubleQuote) {
-        // Close the current argument when a double quote closes
-        args.push(currentArg);
-        currentArg = "";
-      }
-      continue;
-    }
-
-    // Handle spaces: only treat spaces as argument separators if we're not inside quotes
-    if (char === " " && !insideSingleQuote && !insideDoubleQuote) {
-      if (currentArg) {
-        args.push(currentArg);
-        currentArg = "";
-      }
-      continue;
-    }
-
-    // Add the character to the current argument
-    currentArg += char;
-  }
-
-  // Add the last argument if there is one
-  if (currentArg) {
-    args.push(currentArg);
-  }
-
-  return args;
+    return part;
+  });
 }
 
 function handleRedirection(command: string, args: string[]): void {
