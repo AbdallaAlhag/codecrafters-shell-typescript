@@ -71,7 +71,7 @@ function executeProgram(answer: string): void {
       //       command = `"${command}"`;
       // command = `'${command.replace(/"/g, '\\"')}'`;
       command = `'${command}'`;
-      console.log("command: ", command);
+      // console.log("command: ", command);
       // const parsedCommand = parse(command);
       // command = parsedCommand.join(" ");
       // console.log(parsedCommand);
