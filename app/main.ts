@@ -68,9 +68,7 @@ function executeProgram(answer: string): void {
     // console.log("Parsed Arguments:", args);
 
     if (command.includes(" ")) {
-      command = parseCommand(command).join(" ");
-      console.log(command);
-      // command = `'${command}'`;
+      command = `'${command}'`;
       // if (command.includes("'")) {
       //   // Replace single quotes within the command to handle them properly in shell
       //   command = `"${command.replace(/'/g, '"\'"')}"`; // Properly escape single quotes within double quotes
@@ -99,20 +97,7 @@ function executeProgram(answer: string): void {
     console.log(`${command}: command not found`);
   }
 }
-function parseCommand(command: string): string[] {
-  // Match the executable part inside quotes (either single or double quotes)
-  const regex = /'([^']+)'|\"([^\"]+)\"/g;
-  let match;
-  let executable = "";
 
-  // Find the executable part (it should be inside quotes)
-  while ((match = regex.exec(command)) !== null) {
-    // Use the first match (either single or double quote part)
-    executable = match[1] || match[2];
-  }
-
-  return executable.trim().split(/\s+/); // Return the executable as an array (after splitting by space)
-}
 
 function handleRedirection(command: string, args: string[]): void {
   // takes 3 arguments
