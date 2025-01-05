@@ -70,21 +70,14 @@ function executeProgram(answer: string): void {
     if (command.includes(" ")) {
       // command = `'${command}'`;
 
-      const regex = /(["'])(?:(?=(\\?))\2.)*?\1|\S+/g;
-      const args = [];
-      let match;
-      while ((match = regex.exec(command)) !== null) {
-        args.push(match[0].replace(/^["']|["']$/g, ""));
+
+      if (command.includes("'")) {
+        // Replace single quotes within the command to handle them properly in shell
+        command = `"${command.replace(/'/g, '"\'"')}"`; // Properly escape single quotes within double quotes
+      } else {
+        // If no single quotes, simply wrap the command in single quotes
+        command = `'${command}'`;
       }
-      command = args.join(" ");
-      // console.log(args);
-      // if (command.includes("'")) {
-      //   // Replace single quotes within the command to handle them properly in shell
-      //   command = `"${command.replace(/'/g, '"\'"')}"`; // Properly escape single quotes within double quotes
-      // } else {
-      //   // If no single quotes, simply wrap the command in single quotes
-      //   command = `'${command}'`;
-      // }
 
       //       command = `"${command}"`;
       // command = `'${command.replace(/"/g, '\\"')}'`;
