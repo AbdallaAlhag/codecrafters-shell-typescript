@@ -77,7 +77,7 @@ function executeProgram(answer: string): void {
         args.push(match[0].replace(/^["']|["']$/g, ""));
       }
       command = args.join(" ");
-      console.log(args);
+      // console.log(args);
       // if (command.includes("'")) {
       //   // Replace single quotes within the command to handle them properly in shell
       //   command = `"${command.replace(/'/g, '"\'"')}"`; // Properly escape single quotes within double quotes
