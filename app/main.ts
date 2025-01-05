@@ -69,13 +69,31 @@ function executeProgram(answer: string): void {
 
     if (command.includes(" ")) {
       // First, handle the escape for any backslashes inside the command string
-      // Escape backslashes only once so they are preserved
-      command = command.replace(/\\/g, "\\\\");
+      let escape = false;
+      let space = false;
+      let output = "";
 
-      // Handle single quotes by converting them to double quotes
-      command = command.replace(/'([^']+)'/g, '"$1"'); // Convert single quotes to double quotes
+      for (let char of command) {
+        if (escape) {
+          output += char;
+          escape = false;
+          // check if the next char is a backslash
+        } else if (char === "\\") {
+          escape = true;
+        } else if (char === " ") {
+          space = true;
+        } else if (space) {
+          output += " ";
+          space = false;
+          if (char !== "'" && char !== '"' && char !== " ") {
+            output += char;
+          }
+        } else if (char !== "'" && char !== '"' && char !== " ") {
+          output += char;
+        }
+      }
+      command = output;
 
-      // Now wrap the final command in single quotes, as per your requirement
       command = `'${command}'`; // Wrap the entire command in single quotes
     }
 
