@@ -68,27 +68,15 @@ function executeProgram(answer: string): void {
     // console.log("Parsed Arguments:", args);
 
     if (command.includes(" ")) {
-      // Ensure backslashes are escaped properly in the command string
-      command = command.replace(/\\/g, "\\\\"); // Double the backslashes to escape them
+      // First, handle the escape for any backslashes inside the command string
+      // Escape backslashes only once so they are preserved
+      command = command.replace(/\\/g, "\\\\");
 
-      // Handle nested quotes for commands wrapped in single quotes
+      // Handle single quotes by converting them to double quotes
       command = command.replace(/'([^']+)'/g, '"$1"'); // Convert single quotes to double quotes
 
-      command = `'${command}'`;
-      // if (command.includes("'")) {
-      //   // Replace single quotes within the command to handle them properly in shell
-      //   command = `"${command.replace(/'/g, '"\'"')}"`; // Properly escape single quotes within double quotes
-      // } else {
-      //   // If no single quotes, simply wrap the command in single quotes
-      //   command = `'${command}'`;
-      // }
-      //       command = `"${command}"`;
-      // command = `'${command.replace(/"/g, '\\"')}'`;
-      // console.log("command: ", command);
-      // const parsedCommand = parse(command);
-      // command = parsedCommand.join(" ");
-      // console.log(parsedCommand);
-      // console.log(command);
+      // Now wrap the final command in single quotes, as per your requirement
+      command = `'${command}'`; // Wrap the entire command in single quotes
     }
 
     // Resolve paths for arguments and check for file existence
