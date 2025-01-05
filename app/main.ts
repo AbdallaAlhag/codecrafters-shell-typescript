@@ -69,7 +69,12 @@ function executeProgram(answer: string): void {
 
     if (command.includes(" ")) {
       //       command = `"${command}"`;
-      command = `'${command.replace(/"/g, '\\"')}'`;
+      // command = `'${command.replace(/"/g, '\\"')}'`;
+      // console.log("command: ", command);
+      const parsedCommand = parse(command);
+      command = parsedCommand.join(" ");
+      // console.log(parsedCommand);
+      // console.log(command);
     }
 
     // Resolve paths for arguments and check for file existence
