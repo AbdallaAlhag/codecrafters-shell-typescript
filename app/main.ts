@@ -70,7 +70,7 @@ function executeProgram(answer: string): void {
     if (command.includes(" ")) {
       //       command = `"${command}"`;
       // command = `'${command.replace(/"/g, '\\"')}'`;
-      command = `"${command}"`;
+      command = `'${command}'`;
       console.log("command: ", command);
       // const parsedCommand = parse(command);
       // command = parsedCommand.join(" ");
