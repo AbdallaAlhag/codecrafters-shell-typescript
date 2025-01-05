@@ -70,11 +70,11 @@ function executeProgram(answer: string): void {
     if (command.includes(" ")) {
       // command = `'${command}'`;
 
-      // If the command contains single quotes
       if (command.includes("'")) {
-        // Escaping single quotes inside double quotes
-        command = `"${command.replace(/'/g, '"\'"')}"`;
+        // Replace single quotes within the command to handle them properly in shell
+        command = `"${command.replace(/'/g, '"\'"')}"`; // Properly escape single quotes within double quotes
       } else {
+        // If no single quotes, simply wrap the command in single quotes
         command = `'${command}'`;
       }
 
