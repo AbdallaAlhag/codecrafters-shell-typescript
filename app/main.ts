@@ -77,7 +77,6 @@ function executeProgram(answer: string): void {
         if (escape) {
           output += char;
           escape = false;
-          // check if the next char is a backslash
         } else if (char === "\\") {
           escape = true;
         } else if (char === " ") {
