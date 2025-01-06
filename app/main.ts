@@ -29,7 +29,9 @@ function executeProgram(answer: string): void {
 
   try {
     // console.log("answer: ", answer);
-    const exeCommand = escape(split(answer)[0]);
+    // const exeCommand = escape(split(answer)[0]);
+    const exeCommand = split(answer)[0];
+
     // Parse the command and arguments safely using shell-quote
     const parsed = parse(answer) as string[];
     // console.log("parsed answer: ", parsed);
