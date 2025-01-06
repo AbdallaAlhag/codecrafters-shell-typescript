@@ -92,45 +92,93 @@ function executeProgram(answer: string): void {
   }
 }
 
+// function parseExeCommand(exeCommand: string): string {
+//   // console.log("exeCommand: ", exeCommand);
+//   let commandParts = exeCommand.split(" ");
+//   commandParts.pop();
+//   const newCommandParts = commandParts.join(" ").split("");
+//   // console.log("commandParts: ", newCommandParts);
+//   let command = "";
+//   let escapeBool = false;
+//   let insideSingleQuotes = false;
+
+//   for (const part of newCommandParts) {
+//     if (part === "\\") {
+//       escapeBool = true;
+//     } else if (escapeBool) {
+//       if (part === "n") {
+//         command += "\n";
+//       } else if (part === " ") {
+//         command += " ";
+//       } else if (part === '"') {
+//         command += '"';
+//       } else if (part === "'") {
+//         insideSingleQuotes = true;
+//         command += "'";
+//       } else if (part === "\\") {
+//         command += "\\";
+//       }
+//       escapeBool = false;
+//     } else {
+//       command += part;
+//     }
+//   }
+
+//   console.log("command: ", command);
+//   // if (insideSingleQuotes) {
+//   //   command = `"${command}"`; // Use single quotes for Unix-like systems
+//   // } else {
+//   //   command = `'${command}'`;
+//   // }
+//   // console.log("parsed command: ", escape(command));
+//   return command.trim();
+// }
+
 function parseExeCommand(exeCommand: string): string {
-  // console.log("exeCommand: ", exeCommand);
+  // Split and remove the last part (file path)
   let commandParts = exeCommand.split(" ");
   commandParts.pop();
-  const newCommandParts = commandParts.join(" ").split("");
-  // console.log("commandParts: ", newCommandParts);
-  let command = "";
-  let escapeBool = false;
-  let insideSingleQuotes = false;
+  const input = commandParts.join(" ");
 
-  for (const part of newCommandParts) {
-    if (part === "\\") {
-      escapeBool = true;
-    } else if (escapeBool) {
-      if (part === "n") {
-        command += "\n";
-      } else if (part === " ") {
-        command += " ";
-      } else if (part === '"') {
-        command += '"';
-      } else if (part === "'") {
-        insideSingleQuotes = true;
-        command += "'";
-      } else if (part === "\\") {
-        command += "\\";
+  let currentArg = "";
+  let inSingleQuotes = false;
+  let inDoubleQuotes = false;
+  let escape = false;
+
+  for (let idx = 0; idx < input.length; idx++) {
+    const char = input[idx];
+
+    if (char === "\\" && !escape) {
+      escape = true;
+      continue;
+    }
+
+    if (escape) {
+      if (char === "n") {
+        currentArg += "\n";
+      } else if (inDoubleQuotes && char === "'") {
+        // Keep escaped single quotes inside double quotes
+        currentArg += "\\'";
+      } else if (char === "\\") {
+        currentArg += "\\";
+      } else {
+        currentArg += char;
       }
-      escapeBool = false;
+      escape = false;
     } else {
-      command += part;
+      if (char === '"' && !inSingleQuotes) {
+        inDoubleQuotes = !inDoubleQuotes;
+        currentArg += char;
+      } else if (char === "'" && !inDoubleQuotes) {
+        inSingleQuotes = !inSingleQuotes;
+        currentArg += char;
+      } else {
+        currentArg += char;
+      }
     }
   }
 
-  // if (insideSingleQuotes) {
-  //   command = `"${command}"`; // Use single quotes for Unix-like systems
-  // } else {
-  //   // command = `'${command}'`;
-  // }
-  // console.log("parsed command: ", escape(command));
-  return command.trim();
+  return currentArg.trim();
 }
 
 function handleRedirection(command: string, args: string[]): void {
