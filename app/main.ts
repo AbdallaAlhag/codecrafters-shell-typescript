@@ -69,31 +69,32 @@ function executeProgram(answer: string): void {
 
     if (command.includes(" ")) {
       // First, handle the escape for any backslashes inside the command string
-      let escape = false;
-      let space = false;
-      let output = "";
+      // let escape = false;
+      // let space = false;
+      // let output = "";
 
-      for (let char of command) {
-        if (escape) {
-          output += char;
-          escape = false;
-        } else if (char === "\\") {
-          escape = true;
-        } else if (char === " ") {
-          space = true;
-        } else if (space) {
-          output += " ";
-          space = false;
-          if (char !== "'" && char !== '"' && char !== " ") {
-            output += char;
-          }
-        } else if (char !== "'" && char !== '"' && char !== " ") {
-          output += char;
-        }
-      }
-      command = output;
+      // for (let char of command) {
+      //   if (escape) {
+      //     output += char;
+      //     escape = false;
+      //   } else if (char === "\\") {
+      //     escape = true;
+      //   } else if (char === " ") {
+      //     space = true;
+      //   } else if (space) {
+      //     output += " ";
+      //     space = false;
+      //     if (char !== "'" && char !== '"' && char !== " ") {
+      //       output += char;
+      //     }
+      //   } else if (char !== "'" && char !== '"' && char !== " ") {
+      //     output += char;
+      //   }
+      // }
+      // command = output;
+      // console.log(command);
 
-      command = `'${command}'`; // Wrap the entire command in single quotes
+      command = `'${command}'`; // Use single quotes for Unix-like systems
     }
 
     // Resolve paths for arguments and check for file existence
