@@ -131,6 +131,8 @@ function parseExeCommand(exeCommand: string): string {
     } else if (part === '"') {
       command += '\\"';
     } else if (part === "\\") {
+      command += "\\\\";
+    } else if (part === "\\") {
       escape = true;
     } else if (escape) {
       command += part;
