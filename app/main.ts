@@ -93,7 +93,7 @@ function executeProgram(answer: string): void {
       // }
       // command = output;
       // console.log(command);
-
+      command = parseExeCommands(command).join(" ");
       command = `'${command}'`; // Use single quotes for Unix-like systems
     }
 
@@ -108,6 +108,11 @@ function executeProgram(answer: string): void {
   } catch (error: any) {
     console.log(`${command}: command not found`);
   }
+}
+
+function parseExeCommands(command: string): string[] {
+  const parsed = parse(command) as string[];
+  return parsed;
 }
 
 function handleRedirection(command: string, args: string[]): void {
