@@ -93,11 +93,11 @@ function executeProgram(answer: string): void {
 }
 
 function parseExeCommand(exeCommand: string): string {
-  console.log("exeCommand: ", exeCommand);
+  // console.log("exeCommand: ", exeCommand);
   let commandParts = exeCommand.split(" ");
   commandParts.pop();
   const newCommandParts = commandParts.join(" ").split("");
-  console.log("commandParts: ", newCommandParts);
+  // console.log("commandParts: ", newCommandParts);
   let command = "";
   let escape = false;
   let insideSingleQuotes = false;
@@ -129,7 +129,7 @@ function parseExeCommand(exeCommand: string): string {
   // } else {
   //   command = `'${command}'`;
   // }
-  console.log("parsed command: ", { command });
+  // console.log("parsed command: ", { command });
   return command.trim();
 }
 
