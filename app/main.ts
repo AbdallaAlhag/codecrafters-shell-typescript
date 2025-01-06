@@ -29,7 +29,7 @@ function executeProgram(answer: string): void {
 
   try {
     // console.log("answer: ", answer);
-    const exeCommand = split(answer)[0];
+    const exeCommand = escape(split(answer)[0]);
     // console.log([exeCommand]);
     // Parse the command and arguments safely using shell-quote
     const parsed = parse(answer) as string[];
@@ -73,35 +73,9 @@ function executeProgram(answer: string): void {
     // console.log("Parsed Arguments:", args);
 
     if (command.includes(" ")) {
-      // First, handle the escape for any backslashes inside the command string
-      // let escape = false;
-      // let space = false;
-      // let output = "";
-
-      // for (let char of command) {
-      //   if (escape) {
-      //     output += char;
-      //     escape = false;
-      //   } else if (char === "\\") {
-      //     escape = true;
-      //   } else if (char === " ") {
-      //     space = true;
-      //   } else if (space) {
-      //     output += " ";
-      //     space = false;
-      //     if (char !== "'" && char !== '"' && char !== " ") {
-      //       output += char;
-      //     }
-      //   } else if (char !== "'" && char !== '"' && char !== " ") {
-      //     output += char;
-      //   }
-      // }
-      // command = output;
-      // console.log(command);
-
       command = parseExeCommand(exeCommand);
       // console.log(command);
-      command = `'${command}'`; // Use single quotes for Unix-like systems
+      // command = `'${command}'`; // Use single quotes for Unix-like systems
     }
 
     // Resolve paths for arguments and check for file existence
@@ -119,30 +93,36 @@ function executeProgram(answer: string): void {
 
 function parseExeCommand(exeCommand: string): string {
   const commandParts = exeCommand.split("");
-  // console.log("commandParts: ", commandParts);
+  console.log("commandParts: ", commandParts);
   let command = "";
   let escape = false;
 
   for (const part of commandParts) {
-    if (part === " ") {
-      command += "\\ ";
-    } else if (part === "'") {
-      command += "\\'";
-    } else if (part === '"') {
-      command += '\\"';
-    } else if (part === "\\") {
-      command += "\\\\";
-    } else if (part === "\\") {
+    if (part === "\\") {
       escape = true;
     } else if (escape) {
-      command += part;
+      if (part === "n") {
+        command += "\n";
+      }
+      else if (part === " ") {
+        command += " ";
+      }
+      else if (part === '"') {
+        command += '"';
+      }
+      else if (part === "'") {
+        command += "'";
+      }
+      else if (part === "\\") {
+        command += "\\";
+      }
       escape = false;
     } else {
       command += part;
     }
   }
 
-  // console.log("parsed command: ", `'${command}'`);
+  console.log("parsed command: ", `'${command}'`);
   return command.trim();
 }
 
