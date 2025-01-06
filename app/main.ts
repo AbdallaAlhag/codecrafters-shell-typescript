@@ -125,8 +125,23 @@ function parseExeCommand(exeCommand: string): string {
   let inSingleQuotes = false;
   let escape = false;
 
-  for (const part of commandParts) {
-    // Handle quote state changes
+  for (let i = 0; i < commandParts.length; i++) {
+    const part = commandParts[i];
+    const nextPart = commandParts[i + 1];
+
+    // Handle escape sequences
+    if (part === "\\" && !escape) {
+      // Special handling for \n and other escape sequences
+      if (nextPart === "n") {
+        command += "\\n";
+        i++; // Skip the next character
+        continue;
+      }
+      escape = true;
+      continue;
+    }
+
+    // Handle quotes
     if (!escape) {
       if (part === '"' && !inSingleQuotes) {
         inDoubleQuotes = !inDoubleQuotes;
@@ -140,19 +155,22 @@ function parseExeCommand(exeCommand: string): string {
       }
     }
 
-    // Handle escaping
-    if (part === "\\" && !escape) {
-      escape = true;
-      continue;
-    }
-
-    // Handle spaces and special characters
+    // Handle escaped characters
     if (escape) {
-      command += "\\" + part;
+      // Preserve the escape for quotes and special characters
+      if (part === "'" || part === '"' || part === "\\" || part === " ") {
+        command += "\\" + part;
+      } else {
+        command += part;
+      }
       escape = false;
-    } else if (part === " " && !inSingleQuotes && !inDoubleQuotes) {
+    }
+    // Handle spaces
+    else if (part === " " && !inSingleQuotes && !inDoubleQuotes) {
       command += "\\ ";
-    } else {
+    }
+    // Handle all other characters
+    else {
       command += part;
     }
   }
