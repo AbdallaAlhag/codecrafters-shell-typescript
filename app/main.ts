@@ -121,22 +121,37 @@ function parseExeCommand(exeCommand: string): string {
   const commandParts = exeCommand.split("");
   // console.log("commandParts: ", commandParts);
   let command = "";
+  let inDoubleQuotes = false;
+  let inSingleQuotes = false;
   let escape = false;
 
   for (const part of commandParts) {
-    if (part === " ") {
-      command += "\\ ";
-    } else if (part === "'") {
-      command += "\\'";
-    } else if (part === '"') {
-      command += '\\"';
-    } else if (part === "\\") {
-      command += "\\\\";
-    } else if (part === "\\") {
+    // Handle quote state changes
+    if (!escape) {
+      if (part === '"' && !inSingleQuotes) {
+        inDoubleQuotes = !inDoubleQuotes;
+        command += part;
+        continue;
+      }
+      if (part === "'" && !inDoubleQuotes) {
+        inSingleQuotes = !inSingleQuotes;
+        command += part;
+        continue;
+      }
+    }
+
+    // Handle escaping
+    if (part === "\\" && !escape) {
       escape = true;
-    } else if (escape) {
-      command += part;
+      continue;
+    }
+
+    // Handle spaces and special characters
+    if (escape) {
+      command += "\\" + part;
       escape = false;
+    } else if (part === " " && !inSingleQuotes && !inDoubleQuotes) {
+      command += "\\ ";
     } else {
       command += part;
     }
