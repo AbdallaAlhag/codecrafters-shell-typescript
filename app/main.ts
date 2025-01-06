@@ -119,7 +119,7 @@ function executeProgram(answer: string): void {
 
 function parseExeCommand(exeCommand: string): string {
   const commandParts = exeCommand.split("");
-  console.log("commandParts: ", commandParts);
+  // console.log("commandParts: ", commandParts);
   let command = "";
   let escape = false;
 
@@ -142,7 +142,7 @@ function parseExeCommand(exeCommand: string): string {
     }
   }
 
-  console.log("parsed command: ", `'${command}'`);
+  // console.log("parsed command: ", `'${command}'`);
   return command.trim();
 }
 
