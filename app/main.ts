@@ -29,7 +29,8 @@ function executeProgram(answer: string): void {
 
   try {
     // console.log("answer: ", answer);
-    const exeCommand = escape(split(answer)[0]);
+    const exeCommand = split(answer)[0];
+    // console.log([exeCommand]);
     // Parse the command and arguments safely using shell-quote
     const parsed = parse(answer) as string[];
     // console.log("parsed answer: ", parsed);
@@ -98,7 +99,7 @@ function executeProgram(answer: string): void {
       // command = output;
       // console.log(command);
 
-      command = exeCommand;
+      command = parseExeCommand(exeCommand);
       // console.log(command);
       // command = `'${command}'`; // Use single quotes for Unix-like systems
     }
@@ -114,6 +115,29 @@ function executeProgram(answer: string): void {
   } catch (error: any) {
     console.log(`${command}: command not found`);
   }
+}
+
+function parseExeCommand(exeCommand: string): string {
+  const commandParts = exeCommand.split("");
+  // console.log("commandParts: ", commandParts);
+  let command = "";
+  let escape = false;
+
+  for (const part of commandParts) {
+    if (part === " ") {
+      command += "\\ ";
+    } else if (part === "\\") {
+      escape = true;
+    } else if (escape) {
+      command += part;
+      escape = false;
+    } else {
+      command += part;
+    }
+  }
+
+  // console.log("parsed command: ", `'${command}'`);
+  return command.trim();
 }
 
 function handleRedirection(command: string, args: string[]): void {
