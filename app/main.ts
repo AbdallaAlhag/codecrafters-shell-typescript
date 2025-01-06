@@ -119,63 +119,30 @@ function executeProgram(answer: string): void {
 
 function parseExeCommand(exeCommand: string): string {
   const commandParts = exeCommand.split("");
-  // console.log("commandParts: ", commandParts);
+  console.log("commandParts: ", commandParts);
   let command = "";
-  let inDoubleQuotes = false;
-  let inSingleQuotes = false;
   let escape = false;
 
-  for (let i = 0; i < commandParts.length; i++) {
-    const part = commandParts[i];
-    const nextPart = commandParts[i + 1];
-
-    // Handle escape sequences
-    if (part === "\\" && !escape) {
-      // Special handling for \n and other escape sequences
-      if (nextPart === "n") {
-        command += "\\n";
-        i++; // Skip the next character
-        continue;
-      }
-      escape = true;
-      continue;
-    }
-
-    // Handle quotes
-    if (!escape) {
-      if (part === '"' && !inSingleQuotes) {
-        inDoubleQuotes = !inDoubleQuotes;
-        command += part;
-        continue;
-      }
-      if (part === "'" && !inDoubleQuotes) {
-        inSingleQuotes = !inSingleQuotes;
-        command += part;
-        continue;
-      }
-    }
-
-    // Handle escaped characters
-    if (escape) {
-      // Preserve the escape for quotes and special characters
-      if (part === "'" || part === '"' || part === "\\" || part === " ") {
-        command += "\\" + part;
-      } else {
-        command += part;
-      }
-      escape = false;
-    }
-    // Handle spaces
-    else if (part === " " && !inSingleQuotes && !inDoubleQuotes) {
+  for (const part of commandParts) {
+    if (part === " ") {
       command += "\\ ";
-    }
-    // Handle all other characters
-    else {
+    } else if (part === "'") {
+      command += "\\'";
+    } else if (part === '"') {
+      command += '\\"';
+    } else if (part === "\\") {
+      command += "\\\\";
+    } else if (part === "\\") {
+      escape = true;
+    } else if (escape) {
+      command += part;
+      escape = false;
+    } else {
       command += part;
     }
   }
 
-  // console.log("parsed command: ", `'${command}'`);
+  console.log("parsed command: ", `'${command}'`);
   return command.trim();
 }
 
