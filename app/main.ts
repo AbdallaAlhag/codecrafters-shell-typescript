@@ -75,7 +75,7 @@ function executeProgram(answer: string): void {
     if (command.includes(" ")) {
       command = parseExeCommand(exeCommand);
       // console.log(command);
-      command = `"${command}"`; // Use single quotes for Unix-like systems
+      // command = `"${command}"`; // Use single quotes for Unix-like systems
     }
 
     // Resolve paths for arguments and check for file existence
@@ -96,6 +96,7 @@ function parseExeCommand(exeCommand: string): string {
   // console.log("commandParts: ", commandParts);
   let command = "";
   let escape = false;
+  let insideSingleQuotes = false;
 
   for (const part of commandParts) {
     if (part === "\\") {
@@ -103,17 +104,14 @@ function parseExeCommand(exeCommand: string): string {
     } else if (escape) {
       if (part === "n") {
         command += "\n";
-      }
-      else if (part === " ") {
+      } else if (part === " ") {
         command += " ";
-      }
-      else if (part === '"') {
+      } else if (part === '"') {
         command += '"';
-      }
-      else if (part === "'") {
+      } else if (part === "'") {
+        insideSingleQuotes = true;
         command += "'";
-      }
-      else if (part === "\\") {
+      } else if (part === "\\") {
         command += "\\";
       }
       escape = false;
@@ -123,6 +121,11 @@ function parseExeCommand(exeCommand: string): string {
   }
 
   // console.log("parsed command: ", `'${command}'`);
+  if (insideSingleQuotes) {
+    command = `"${command}"`; // Use single quotes for Unix-like systems
+  } else {
+    command = `'${command}'`; 
+  }
   return command.trim();
 }
 
