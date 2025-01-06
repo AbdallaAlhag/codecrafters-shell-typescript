@@ -29,7 +29,8 @@ function executeProgram(answer: string): void {
 
   try {
     // console.log("answer: ", answer);
-    const exeCommand = escape(split(answer)[0]);
+    // const exeCommand = escape(split(answer)[0]);
+    const exeCommand = answer;
     // console.log([exeCommand]);
     // Parse the command and arguments safely using shell-quote
     const parsed = parse(answer) as string[];
@@ -92,8 +93,11 @@ function executeProgram(answer: string): void {
 }
 
 function parseExeCommand(exeCommand: string): string {
-  const commandParts = exeCommand.split("");
-  // console.log("commandParts: ", commandParts);
+  // console.log("exeCommand: ", exeCommand);
+  let commandParts = exeCommand.split(" ");
+  commandParts.pop();
+  const newCommandParts = commandParts.join(" ").split("");
+  // console.log("commandParts: ", newCommandParts);
   let command = "";
   let escape = false;
   let insideSingleQuotes = false;
@@ -120,12 +124,12 @@ function parseExeCommand(exeCommand: string): string {
     }
   }
 
-  // console.log("parsed command: ", `'${command}'`);
-  if (insideSingleQuotes) {
-    command = `"${command}"`; // Use single quotes for Unix-like systems
-  } else {
-    command = `'${command}'`; 
-  }
+  // if (insideSingleQuotes) {
+  //   command = `"${command}"`; // Use single quotes for Unix-like systems
+  // } else {
+  //   command = `'${command}'`;
+  // }
+  // console.log("parsed command: ", { command });
   return command.trim();
 }
 
