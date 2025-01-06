@@ -112,7 +112,7 @@ function parseExeCommand(exeCommand: string): string {
         insideSingleQuotes = true;
         command += "'";
       } else if (part === "\\") {
-        command += "\\";
+        command += "\\\\";
       }
       escape = false;
     } else {
