@@ -28,11 +28,11 @@ function executeProgram(answer: string): void {
   let outputFile: string | undefined;
 
   try {
-    console.log("answer: ", answer);
+    // console.log("answer: ", answer);
     const exeCommand = escape(split(answer)[0]);
     // Parse the command and arguments safely using shell-quote
     const parsed = parse(answer) as string[];
-    console.log("parsed answer: ", parsed);
+    // console.log("parsed answer: ", parsed);
 
     // Extract command and arguments
     if (parsed.length > 0) {
