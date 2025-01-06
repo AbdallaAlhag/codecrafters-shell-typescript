@@ -30,7 +30,7 @@ function executeProgram(answer: string): void {
   try {
     // console.log("answer: ", answer);
     // const exeCommand = escape(split(answer)[0]);
-    const exeCommand = answer;
+    const exeCommand = escape(answer);
     // console.log([exeCommand]);
     // Parse the command and arguments safely using shell-quote
     const parsed = parse(answer) as string[];
@@ -93,19 +93,19 @@ function executeProgram(answer: string): void {
 }
 
 function parseExeCommand(exeCommand: string): string {
-  // console.log("exeCommand: ", exeCommand);
+  console.log("exeCommand: ", exeCommand);
   let commandParts = exeCommand.split(" ");
   commandParts.pop();
   const newCommandParts = commandParts.join(" ").split("");
-  // console.log("commandParts: ", newCommandParts);
+  console.log("commandParts: ", newCommandParts);
   let command = "";
-  let escape = false;
+  let escapeBool = false;
   let insideSingleQuotes = false;
 
   for (const part of newCommandParts) {
     if (part === "\\") {
-      escape = true;
-    } else if (escape) {
+      escapeBool = true;
+    } else if (escapeBool) {
       if (part === "n") {
         command += "\n";
       } else if (part === " ") {
@@ -116,9 +116,9 @@ function parseExeCommand(exeCommand: string): string {
         insideSingleQuotes = true;
         command += "'";
       } else if (part === "\\") {
-        command += "\\\\";
+        command += "\\";
       }
-      escape = false;
+      escapeBool = false;
     } else {
       command += part;
     }
@@ -129,7 +129,7 @@ function parseExeCommand(exeCommand: string): string {
   // } else {
   //   command = `'${command}'`;
   // }
-  // console.log("parsed command: ", { command });
+  console.log("parsed command: ", escape(command));
   return command.trim();
 }
 
