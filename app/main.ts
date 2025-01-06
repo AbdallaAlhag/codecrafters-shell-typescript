@@ -93,8 +93,9 @@ function executeProgram(answer: string): void {
       // }
       // command = output;
       // console.log(command);
-      command = parseExeCommands(command).join(" ");
-      command = `'${command}'`; // Use single quotes for Unix-like systems
+
+      command = parseExeCommand(command);
+      // command = `'${command}'`; // Use single quotes for Unix-like systems
     }
 
     // Resolve paths for arguments and check for file existence
@@ -110,11 +111,14 @@ function executeProgram(answer: string): void {
   }
 }
 
-function parseExeCommands(command: string): string[] {
-  const parsed = parse(command) as string[];
-  return parsed;
+function parseExeCommand(command: string): string {
+  if (command.startsWith("'") && command.endsWith("'")) {
+    command = `'${command}'`;
+  } else if (command.startsWith('"') && command.endsWith('"')) {
+    command = `"${command}"`;
+  }
+  return command;
 }
-
 function handleRedirection(command: string, args: string[]): void {
   // takes 3 arguments
   // [input, >, output]
