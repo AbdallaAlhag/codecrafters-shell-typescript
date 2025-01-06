@@ -4,6 +4,7 @@ import * as fs from "fs";
 import { execSync } from "child_process";
 import * as path from "path";
 import { parse } from "shell-quote";
+import { escape, split } from "shellwords";
 
 const rl = createInterface({
   input: process.stdin,
@@ -27,8 +28,11 @@ function executeProgram(answer: string): void {
   let outputFile: string | undefined;
 
   try {
+    console.log("answer: ", answer);
+    const exeCommand = escape(split(answer)[0]);
     // Parse the command and arguments safely using shell-quote
     const parsed = parse(answer) as string[];
+    console.log("parsed answer: ", parsed);
 
     // Extract command and arguments
     if (parsed.length > 0) {
@@ -94,7 +98,7 @@ function executeProgram(answer: string): void {
       // command = output;
       // console.log(command);
 
-      command = parseExeCommand(command);
+      command = exeCommand;
       // command = `'${command}'`; // Use single quotes for Unix-like systems
     }
 
@@ -111,14 +115,6 @@ function executeProgram(answer: string): void {
   }
 }
 
-function parseExeCommand(command: string): string {
-  if (command.startsWith("'") && command.endsWith("'")) {
-    command = `'${command}'`;
-  } else if (command.startsWith('"') && command.endsWith('"')) {
-    command = `"${command}"`;
-  }
-  return command;
-}
 function handleRedirection(command: string, args: string[]): void {
   // takes 3 arguments
   // [input, >, output]
