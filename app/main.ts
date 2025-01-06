@@ -101,7 +101,7 @@ function executeProgram(answer: string): void {
 
       command = parseExeCommand(exeCommand);
       // console.log(command);
-      // command = `'${command}'`; // Use single quotes for Unix-like systems
+      command = `'${command}'`; // Use single quotes for Unix-like systems
     }
 
     // Resolve paths for arguments and check for file existence
