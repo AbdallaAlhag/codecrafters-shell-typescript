@@ -29,7 +29,7 @@ function executeProgram(answer: string): void {
 
   try {
     // console.log("answer: ", answer);
-    const exeCommand = escape(answer)[0];
+    const exeCommand = escape(split(answer)[0]);
     // Parse the command and arguments safely using shell-quote
     const parsed = parse(answer) as string[];
     // console.log("parsed answer: ", parsed);
@@ -99,7 +99,7 @@ function executeProgram(answer: string): void {
       // console.log(command);
 
       command = exeCommand;
-      // console.log([command]);
+      // console.log(command);
       // command = `'${command}'`; // Use single quotes for Unix-like systems
     }
 
