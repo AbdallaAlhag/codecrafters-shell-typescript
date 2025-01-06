@@ -124,11 +124,11 @@ function parseExeCommand(exeCommand: string): string {
     }
   }
 
-  if (insideSingleQuotes) {
-    command = `"${command}"`; // Use single quotes for Unix-like systems
-  } else {
-    // command = `'${command}'`;
-  }
+  // if (insideSingleQuotes) {
+  //   command = `"${command}"`; // Use single quotes for Unix-like systems
+  // } else {
+  //   // command = `'${command}'`;
+  // }
   // console.log("parsed command: ", escape(command));
   return command.trim();
 }
