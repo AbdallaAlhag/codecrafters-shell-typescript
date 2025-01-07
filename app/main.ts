@@ -263,42 +263,40 @@ function parseEchoQuotes(answer: string): void {
   // const hasDoubleQuotes = stringArgs.includes('"');
 
   if (startsAndEndsWithDoubleQuotes) {
-    // console.log("before split stringArgs: ", stringArgs);
-    const stringArgsArray = stringArgs.split("");
+    // Remove the surrounding double quotes from the string
+    stringArgs = stringArgs.slice(1, -1);
 
-    // console.log("after split stringArgsArray: ", stringArgsArray);
-    // stringArgsArray.split('" ');
     const output: string[] = [];
-    for (let args of stringArgsArray) {
-      // console.log("args: ", args);
-      args = args.trim();
-      if (args === "") {
-        continue;
-      }
-      // args = args.replace(/"/g, "");
+    let escape = false; // Flag to handle escape sequences
+    let result = ""; // Store the final result
 
-      let escape = false;
-      let result = "";
-      // console.log(args);
-      // console.log("char: ", args);
+    for (let i = 0; i < stringArgs.length; i++) {
+      let char = stringArgs[i];
+
       if (escape) {
-        result += args;
-        escape = false;
-        // check f the next char is a backslash
-      } else if (args === "\\") {
+        // Handle escape sequences
+        if (char === "n") {
+          result += "\n"; // Convert \n to newline
+        } else if (char === "'") {
+          result += "'"; // Handle single quote escape
+        } else if (char === "\\") {
+          result += "\\"; // Handle backslash escape
+        } else {
+          result += "\\" + char; // Keep other backslash escapes as they are
+        }
+        escape = false; // Reset escape flag after processing
+      } else if (char === "\\") {
+        // If a backslash is encountered, set escape flag
         escape = true;
-      } else if (args === "'") {
-        result += "'";
-      } else if (args !== '"') {
-        result += args;
+      } else {
+        // Normal character, just add it to the result
+        result += char;
       }
-
-      // output.push(args);
-      output.push(result);
-      // console.log("output: ", output);
     }
-    outputResult = output.join("");
-    // console.log("outputResult: ", outputResult);
+
+    output.push(result);
+    outputResult = output.join(""); // Join the array into a single string
+    console.log("outputResult: ", outputResult);
   }
 
   if (!redirect && startsAndEndsWithDoubleQuotes) {
