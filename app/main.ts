@@ -279,7 +279,10 @@ function parseEchoQuotes(answer: string): void {
           result += "\n"; // Convert \n to newline
         } else if (char === "'") {
           result += "'"; // Handle single quote escape
-        } else if (char === "\\") {
+        } else if (char === '"') {
+          result += '"';
+        } // Handle double quote escape
+        else if (char === "\\") {
           result += "\\"; // Handle backslash escape
         } else {
           result += "\\" + char; // Keep other backslash escapes as they are
@@ -290,6 +293,7 @@ function parseEchoQuotes(answer: string): void {
         escape = true;
       } else {
         // Normal character, just add it to the result
+        
         result += char;
       }
     }
