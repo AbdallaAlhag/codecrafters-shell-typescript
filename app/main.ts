@@ -72,7 +72,7 @@ function executeProgram(answer: string): void {
 
     // console.log("Parsed Command:", command);
     // console.log("Parsed Arguments:", args);
-    console.log("hi", command);
+    // console.log("hi", command);
     if (command.includes(" ")) {
       command = parseExeCommand(exeCommand);
       // console.log(command);
@@ -301,10 +301,10 @@ function parseEchoQuotes(answer: string): void {
     // console.log("outputResult: ", outputResult);
   }
 
-  // if (!redirect && startsAndEndsWithDoubleQuotes) {
-  //   console.log(outputResult);
-  //   return;
-  // }
+  if (!redirect && startsAndEndsWithDoubleQuotes) {
+    console.log(outputResult);
+    return;
+  }
 
   // single quote
   // if (stringArgs.includes("'")) {
