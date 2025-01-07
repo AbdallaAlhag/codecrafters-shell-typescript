@@ -49,7 +49,7 @@ function executeProgram(answer: string): void {
 
     if (command === "cat") {
       // console.log(args);
-      args = args.flatMap((arg) => parseCatQuotes(arg));
+        args = args.flatMap(arg => parseCatQuotes(arg));
     }
     // Handle redirection
     const redirection = args.findIndex(
@@ -85,22 +85,12 @@ function executeProgram(answer: string): void {
     // const resolvedFiles = args.map((arg) => path.resolve(arg.trim()));
     const resolvedFiles = args.map((arg) => `"${path.resolve(arg.trim())}"`);
 
-    if (command == "cat") {
-      const escapedFiles = resolvedFiles.map(
-        (file) => `"${file.replace(/"/g, '\\"')}"`
-      );
-      const result = execSync(`cat ${escapedFiles.join(" ")}`, {
-        encoding: "utf-8",
-      });
-      console.log(result.trim());
-    } else {
-      // console.log(resolvedFiles.join(" "));
-      // If no redirection, just print output
-      const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
-        encoding: "utf-8",
-      });
-      console.log(result.trim());
-    }
+    // console.log(resolvedFiles.join(" "));
+    // If no redirection, just print output
+    const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
+      encoding: "utf-8",
+    });
+    console.log(result.trim());
   } catch (error: any) {
     console.log(`${command}: command not found`);
   }
