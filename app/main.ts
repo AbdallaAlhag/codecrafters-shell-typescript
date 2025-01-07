@@ -49,9 +49,11 @@ function executeProgram(answer: string): void {
 
     if (command === "cat") {
       // console.log(args);
+      let tempArg: string[] = [];
       for (let arg of args) {
-        arg = parseCatQuotes(arg);
+        tempArg.push(parseCatQuotes(arg));
       }
+      args = tempArg;
       // console.log(args);
     }
     // Handle redirection
@@ -377,18 +379,18 @@ function parseEchoQuotes(answer: string): void {
   }
 }
 
-function parseCatQuotes(input: string): string {
+function parseCatQuotes(input: string): string[] {
   if (typeof input !== "string") {
     return input;
   }
   // console.log("initial input: ", input);
   // const result = input.replace(/'| |"/g, "");
   // return result;
-  let escape = false;
-  let result = [];
+  let result: string[] = [];
   let currentPath = "";
   let insideDoubleQuotes = false;
   let insideSingleQuotes = false;
+  let escape = false;
 
   for (let char of input) {
     if (escape) {
@@ -399,19 +401,15 @@ function parseCatQuotes(input: string): string {
     } else if (char === '"') {
       if (!insideSingleQuotes) {
         insideDoubleQuotes = !insideDoubleQuotes; // Toggle double-quote state
-        currentPath += char; // Keep the quotes as part of the path
-      } else {
-        currentPath += char;
       }
+      currentPath += char; // Keep quotes as part of the path
     } else if (char === "'") {
       if (!insideDoubleQuotes) {
         insideSingleQuotes = !insideSingleQuotes; // Toggle single-quote state
-        currentPath += char; // Keep the quotes as part of the path
-      } else {
-        currentPath += char;
       }
+      currentPath += char; // Keep quotes as part of the path
     } else if (char === " " && !insideSingleQuotes && !insideDoubleQuotes) {
-      // Space outside of quotes indicates a new path
+      // Split on spaces only if outside quotes
       if (currentPath) {
         result.push(currentPath.trim());
         currentPath = "";
@@ -421,12 +419,11 @@ function parseCatQuotes(input: string): string {
     }
   }
 
-  // Push the last path if any
   if (currentPath) {
-    result.push(currentPath.trim());
+    result.push(currentPath.trim()); // Add the last path
   }
-
-  return result.join("");
+  // console.log("result: ", result);
+  return result;
 }
 
 // only takes one argument like posix POSIX-compliant shells
