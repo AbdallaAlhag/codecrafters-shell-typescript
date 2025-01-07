@@ -85,8 +85,10 @@ function executeProgram(answer: string): void {
     }
 
     // Resolve paths for arguments and check for file existence
-    const resolvedFiles = args.map((arg) => path.resolve(arg.trim()));
+    // const resolvedFiles = args.map((arg) => path.resolve(arg.trim()));
+    const resolvedFiles = args.map((arg) => `"${path.resolve(arg.trim())}"`);
 
+    // console.log(resolvedFiles.join(" "));
     // If no redirection, just print output
     const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
       encoding: "utf-8",
