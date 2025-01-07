@@ -264,7 +264,7 @@ function parseEchoQuotes(answer: string): void {
 
   if (startsAndEndsWithDoubleQuotes) {
     // Remove the surrounding double quotes from the string
-    stringArgs = stringArgs.slice(1, -1);
+    // stringArgs = stringArgs.slice(1, -1);
 
     const output: string[] = [];
     let escape = false; // Flag to handle escape sequences
