@@ -47,6 +47,9 @@ function executeProgram(answer: string): void {
       return;
     }
 
+    if (command === "cat") {
+      command = parseCatQuotes(command);
+    }
     // Handle redirection
     const redirection = args.findIndex(
       (arg) =>
