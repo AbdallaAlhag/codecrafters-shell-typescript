@@ -378,7 +378,7 @@ function parseEchoQuotes(answer: string): void {
 }
 
 function parseCatQuotes(input: string): string {
-  console.log(input);
+  // console.log(input);
   const result = input.replace(/'| |"/g, "");
   return result;
   // let escape = false;
