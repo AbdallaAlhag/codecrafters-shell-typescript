@@ -381,7 +381,7 @@ function parseCatQuotes(input: string): string {
   if (typeof input !== "string") {
     return input;
   }
-  console.log("initial input: ", input);
+  // console.log("initial input: ", input);
   // const result = input.replace(/'| |"/g, "");
   // return result;
   let escape = false;
@@ -412,7 +412,7 @@ function parseCatQuotes(input: string): string {
     }
   }
 
-  console.log("Parsed string:", result);
+  // console.log("Parsed string:", result);
   return result;
 }
 
