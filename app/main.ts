@@ -72,7 +72,7 @@ function executeProgram(answer: string): void {
 
     // console.log("Parsed Command:", command);
     // console.log("Parsed Arguments:", args);
-
+    console.log("hi", command);
     if (command.includes(" ")) {
       command = parseExeCommand(exeCommand);
       // console.log(command);
@@ -91,48 +91,6 @@ function executeProgram(answer: string): void {
     console.log(`${command}: command not found`);
   }
 }
-
-// function parseExeCommand(exeCommand: string): string {
-//   // console.log("exeCommand: ", exeCommand);
-//   let commandParts = exeCommand.split(" ");
-//   commandParts.pop();
-//   const newCommandParts = commandParts.join(" ").split("");
-//   // console.log("commandParts: ", newCommandParts);
-//   let command = "";
-//   let escapeBool = false;
-//   let insideSingleQuotes = false;
-
-//   for (const part of newCommandParts) {
-//     if (part === "\\") {
-//       escapeBool = true;
-//     } else if (escapeBool) {
-//       if (part === "n") {
-//         command += "\n";
-//       } else if (part === " ") {
-//         command += " ";
-//       } else if (part === '"') {
-//         command += '"';
-//       } else if (part === "'") {
-//         insideSingleQuotes = true;
-//         command += "'";
-//       } else if (part === "\\") {
-//         command += "\\";
-//       }
-//       escapeBool = false;
-//     } else {
-//       command += part;
-//     }
-//   }
-
-//   console.log("command: ", command);
-//   // if (insideSingleQuotes) {
-//   //   command = `"${command}"`; // Use single quotes for Unix-like systems
-//   // } else {
-//   //   command = `'${command}'`;
-//   // }
-//   // console.log("parsed command: ", escape(command));
-//   return command.trim();
-// }
 
 function parseExeCommand(exeCommand: string): string {
   // Split and remove the last part (file path)
@@ -305,12 +263,14 @@ function parseEchoQuotes(answer: string): void {
   // const hasDoubleQuotes = stringArgs.includes('"');
 
   if (startsAndEndsWithDoubleQuotes) {
-    const stringArgsArray = stringArgs.split('" ');
+    // console.log("before split stringArgs: ", stringArgs);
+    const stringArgsArray = stringArgs.split("");
 
-    // console.log("stringArgsArray: ", stringArgsArray);
-
+    // console.log("after split stringArgsArray: ", stringArgsArray);
+    // stringArgsArray.split('" ');
     const output: string[] = [];
     for (let args of stringArgsArray) {
+      // console.log("args: ", args);
       args = args.trim();
       if (args === "") {
         continue;
@@ -320,22 +280,30 @@ function parseEchoQuotes(answer: string): void {
       let escape = false;
       let result = "";
       // console.log(args);
-      for (let char of args) {
-        if (escape) {
-          result += char;
-          escape = false;
-          // check if the next char is a backslash
-        } else if (char === "\\") {
-          escape = true;
-        } else if (char !== '"') {
-          result += char;
-        }
+      // console.log("char: ", args);
+      if (escape) {
+        result += args;
+        escape = false;
+        // check if the next char is a backslash
+      } else if (args === "\\") {
+        escape = true;
+      } else if (args === "'") {
+        result += "\\'";
+      } else if (args !== '"') {
+        result += args;
       }
 
       // output.push(args);
       output.push(result);
-      outputResult = output.join(" ");
+      // console.log("output: ", output);
     }
+    outputResult = output.join("");
+    // console.log("outputResult: ", outputResult);
+  }
+
+  if (!redirect && startsAndEndsWithDoubleQuotes) {
+    console.log(outputResult);
+    return;
   }
 
   // single quote
@@ -374,8 +342,14 @@ function parseEchoQuotes(answer: string): void {
     }
     outputResult = output;
   }
+
   if (!redirect) {
-    console.log(outputResult);
+    console.log("outputResult again: ", outputResult);
+    // const normalizedOutput = outputResult
+    //   .replace(/\\'/g, "'")
+    //   .replace(/\\n/g, "\n")
+    //   .trim();
+    // console.log(normalizedOutput);
   } else {
     file = path.resolve(file.trim());
 
