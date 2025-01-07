@@ -85,12 +85,22 @@ function executeProgram(answer: string): void {
     // const resolvedFiles = args.map((arg) => path.resolve(arg.trim()));
     const resolvedFiles = args.map((arg) => `"${path.resolve(arg.trim())}"`);
 
-    // console.log(resolvedFiles.join(" "));
-    // If no redirection, just print output
-    const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
-      encoding: "utf-8",
-    });
-    console.log(result.trim());
+    if (command == "cat") {
+      const escapedFiles = resolvedFiles.map(
+        (file) => `"${file.replace(/"/g, '\\"')}"`
+      );
+      const result = execSync(`cat ${escapedFiles.join(" ")}`, {
+        encoding: "utf-8",
+      });
+      console.log(result.trim());
+    } else {
+      // console.log(resolvedFiles.join(" "));
+      // If no redirection, just print output
+      const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
+        encoding: "utf-8",
+      });
+      console.log(result.trim());
+    }
   } catch (error: any) {
     console.log(`${command}: command not found`);
   }
