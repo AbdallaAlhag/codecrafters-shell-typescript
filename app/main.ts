@@ -116,7 +116,7 @@ function parseExeCommand(exeCommand: string): string {
         currentArg += "\n";
       } else if (inDoubleQuotes && char === "'") {
         // Keep escaped single quotes inside double quotes
-        currentArg += "\\'";
+        currentArg += "\'";
       } else if (char === "\\") {
         currentArg += "\\";
       } else {
