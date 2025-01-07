@@ -49,7 +49,7 @@ function executeProgram(answer: string): void {
 
     if (command === "cat") {
       // console.log(args);
-      for (let arg in args) {
+      for (let arg of args) {
         arg = parseCatQuotes(arg);
       }
       // console.log(args);
@@ -378,23 +378,27 @@ function parseEchoQuotes(answer: string): void {
 }
 
 function parseCatQuotes(input: string): string {
-  // return input.replace(/'| |"/g, "");
-  let escape = false;
-  let result = "";
+  console.log(input);
+  const result = input.replace(/'| |"/g, "");
+  return result;
+  // let escape = false;
+  // let result = "";
 
-  for (let char of input) {
-    if (escape) {
-      result += char;
-      escape = false;
-      // check if the next char is a backslash
-    } else if (char === "\\") {
-      escape = true;
-    } else if (char !== "'" && char !== '"') {
-      result += char;
-    }
-  }
+  // for (let char of input) {
+  //   if (escape) {
+  //     result += char;
+  //     escape = false;
+  //     // check if the next char is a backslash
+  //   } else if (char === "\\") {
+  //     escape = true;
+  //   } else if (char !== "'" && char !== '"') {
+  //     result += char;
+  //   }else {
+  //     result += "\\" + char; // Keep other backslash escapes as they are
+  //   }
+  // }
 
-  // console.log("Parsed string:", result);
+  console.log("Parsed string:", result);
   return result;
 }
 
