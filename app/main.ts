@@ -354,7 +354,7 @@ function parseEchoQuotes(answer: string): void {
   }
 
   if (!redirect) {
-    console.log("outputResult again: ", outputResult);
+    console.log(outputResult);
     // const normalizedOutput = outputResult
     //   .replace(/\\'/g, "'")
     //   .replace(/\\n/g, "\n")
@@ -385,35 +385,48 @@ function parseCatQuotes(input: string): string {
   // const result = input.replace(/'| |"/g, "");
   // return result;
   let escape = false;
-  let result = "";
+  let result = [];
+  let currentPath = "";
   let insideDoubleQuotes = false;
   let insideSingleQuotes = false;
 
   for (let char of input) {
     if (escape) {
-      // Always include escaped characters, even within quotes
-      result += char;
+      currentPath += char; // Add the escaped character
       escape = false;
     } else if (char === "\\") {
-      escape = true; // Set escape flag for the next character
-      result += char; // Keep the backslash
+      escape = true; // Escape the next character
     } else if (char === '"') {
       if (!insideSingleQuotes) {
         insideDoubleQuotes = !insideDoubleQuotes; // Toggle double-quote state
+        currentPath += char; // Keep the quotes as part of the path
+      } else {
+        currentPath += char;
       }
-      result += char;
     } else if (char === "'") {
       if (!insideDoubleQuotes) {
         insideSingleQuotes = !insideSingleQuotes; // Toggle single-quote state
+        currentPath += char; // Keep the quotes as part of the path
+      } else {
+        currentPath += char;
       }
-      result += char;
+    } else if (char === " " && !insideSingleQuotes && !insideDoubleQuotes) {
+      // Space outside of quotes indicates a new path
+      if (currentPath) {
+        result.push(currentPath.trim());
+        currentPath = "";
+      }
     } else {
-      result += char; // Add normal characters
+      currentPath += char; // Normal character
     }
   }
 
-  // console.log("Parsed string:", result);
-  return result;
+  // Push the last path if any
+  if (currentPath) {
+    result.push(currentPath.trim());
+  }
+
+  return result.join("");
 }
 
 // only takes one argument like posix POSIX-compliant shells
