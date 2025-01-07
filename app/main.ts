@@ -293,7 +293,9 @@ function parseEchoQuotes(answer: string): void {
         escape = true;
       } else {
         // Normal character, just add it to the result
-        
+        if (char === '"' || char === "'") {
+          continue;
+        }
         result += char;
       }
     }
