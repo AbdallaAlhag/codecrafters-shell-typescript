@@ -296,7 +296,6 @@ function parseEchoQuotes(answer: string): void {
 
     output.push(result);
     outputResult = output.join(""); // Join the array into a single string
-    console.log("outputResult: ", outputResult);
   }
 
   if (!redirect && startsAndEndsWithDoubleQuotes) {
