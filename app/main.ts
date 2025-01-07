@@ -381,24 +381,36 @@ function parseCatQuotes(input: string): string {
   if (typeof input !== "string") {
     return input;
   }
-  const result = input.replace(/'| |"/g, "");
-  return result;
-  // let escape = false;
-  // let result = "";
+  console.log("initial input: ", input);
+  // const result = input.replace(/'| |"/g, "");
+  // return result;
+  let escape = false;
+  let result = "";
+  let insideDoubleQuotes = false;
+  let insideSingleQuotes = false;
 
-  // for (let char of input) {
-  //   if (escape) {
-  //     result += char;
-  //     escape = false;
-  //     // check if the next char is a backslash
-  //   } else if (char === "\\") {
-  //     escape = true;
-  //   } else if (char !== "'" && char !== '"') {
-  //     result += char;
-  //   }else {
-  //     result += "\\" + char; // Keep other backslash escapes as they are
-  //   }
-  // }
+  for (let char of input) {
+    if (escape) {
+      // Always include escaped characters, even within quotes
+      result += char;
+      escape = false;
+    } else if (char === "\\") {
+      escape = true; // Set escape flag for the next character
+      result += char; // Keep the backslash
+    } else if (char === '"') {
+      if (!insideSingleQuotes) {
+        insideDoubleQuotes = !insideDoubleQuotes; // Toggle double-quote state
+      }
+      result += char;
+    } else if (char === "'") {
+      if (!insideDoubleQuotes) {
+        insideSingleQuotes = !insideSingleQuotes; // Toggle single-quote state
+      }
+      result += char;
+    } else {
+      result += char; // Add normal characters
+    }
+  }
 
   console.log("Parsed string:", result);
   return result;
