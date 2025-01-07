@@ -288,7 +288,7 @@ function parseEchoQuotes(answer: string): void {
       } else if (args === "\\") {
         escape = true;
       } else if (args === "'") {
-        result += "\\'";
+        result += "'";
       } else if (args !== '"') {
         result += args;
       }
