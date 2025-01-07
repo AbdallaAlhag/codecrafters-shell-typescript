@@ -301,10 +301,10 @@ function parseEchoQuotes(answer: string): void {
     // console.log("outputResult: ", outputResult);
   }
 
-  if (!redirect && startsAndEndsWithDoubleQuotes) {
-    console.log(outputResult);
-    return;
-  }
+  // if (!redirect && startsAndEndsWithDoubleQuotes) {
+  //   console.log(outputResult);
+  //   return;
+  // }
 
   // single quote
   // if (stringArgs.includes("'")) {
