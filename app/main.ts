@@ -49,12 +49,7 @@ function executeProgram(answer: string): void {
 
     if (command === "cat") {
       // console.log(args);
-      let tempArg: string[] = [];
-      for (let arg of args) {
-        tempArg.push(parseCatQuotes(arg));
-      }
-      args = tempArg;
-      // console.log(args);
+      args = args.flatMap((arg) => parseCatQuotes(arg));
     }
     // Handle redirection
     const redirection = args.findIndex(
