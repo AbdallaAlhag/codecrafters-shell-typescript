@@ -286,9 +286,9 @@ function parseEchoQuotes(answer: string): void {
         escape = false;
         // check f the next char is a backslash
       } else if (args === "\\") {
-        result += '\\';
+        escape = true;
       } else if (args === "'") {
-        result += "'";
+        result += "\\'";
       } else if (args !== '"') {
         result += args;
       }
