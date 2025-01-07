@@ -48,9 +48,12 @@ function executeProgram(answer: string): void {
     }
 
     if (command === "cat") {
-      for (let arg in args){
+      console.log(args);
+      for (let arg in args) {
+        console.log(args);
         arg = parseCatQuotes(arg);
       }
+      console.log(args);
     }
     // Handle redirection
     const redirection = args.findIndex(
@@ -376,24 +379,24 @@ function parseEchoQuotes(answer: string): void {
 }
 
 function parseCatQuotes(input: string): string {
-  return input.replace(/'| |"/g, "");
-  // let escape = false;
-  // let result = "";
+  // return input.replace(/'| |"/g, "");
+  let escape = false;
+  let result = "";
 
-  // for (let char of input) {
-  //   if (escape) {
-  //     result += char;
-  //     escape = false;
-  //     // check if the next char is a backslash
-  //   } else if (char === "\\") {
-  //     escape = true;
-  //   } else if (char !== "'" && char !== '"') {
-  //     result += char;
-  //   }
-  // }
+  for (let char of input) {
+    if (escape) {
+      result += char;
+      escape = false;
+      // check if the next char is a backslash
+    } else if (char === "\\") {
+      escape = true;
+    } else if (char !== "'" && char !== '"') {
+      result += char;
+    }
+  }
 
-  // console.log("Parsed string:", result);
-  // return result;
+  console.log("Parsed string:", result);
+  return result;
 }
 
 // only takes one argument like posix POSIX-compliant shells
