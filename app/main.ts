@@ -64,13 +64,11 @@ function executeProgram(answer: string): void {
     const redirectionIndex = args.findIndex(
       (arg) => arg === ">" || arg === "1>"
     );
-
     if (redirectionIndex !== -1) {
       // Separate arguments and output file for redirection
       outputFile = args[redirectionIndex + 1]; // Get the file for redirection
       args = args.slice(0, redirectionIndex); // Get all arguments before the redirection
     }
-
     if (redirection !== -1) {
       // console.log("Redirection detected");
       handleRedirection(command, args);
@@ -378,7 +376,9 @@ function parseEchoQuotes(answer: string): void {
 }
 
 function parseCatQuotes(input: string): string {
-  // console.log(input);
+  if (typeof input !== "string") {
+    return input;
+  }
   const result = input.replace(/'| |"/g, "");
   return result;
   // let escape = false;
