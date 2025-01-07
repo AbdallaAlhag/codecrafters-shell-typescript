@@ -49,7 +49,14 @@ function executeProgram(answer: string): void {
 
     if (command === "cat") {
       // console.log(args);
-        args = args.flatMap(arg => parseCatQuotes(arg));
+      args = args.flatMap((arg) => parseCatQuotes(arg));
+      console.log(args);
+      const formattedArgs = args.map((arg) => {
+        // Remove unnecessary escaping of double quotes
+        const unescaped = arg.replace(/\\"/g, '"');
+        // Wrap the entire path in single quotes for shell compatibility
+        return `'${unescaped}'`;
+      });
     }
     // Handle redirection
     const redirection = args.findIndex(
@@ -87,6 +94,7 @@ function executeProgram(answer: string): void {
 
     // console.log(resolvedFiles.join(" "));
     // If no redirection, just print output
+    console.log(resolvedFiles.join(" "));
     const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
       encoding: "utf-8",
     });
@@ -99,48 +107,66 @@ function executeProgram(answer: string): void {
 function parseExeCommand(exeCommand: string): string {
   // Split and remove the last part (file path)
   let commandParts = exeCommand.split(" ");
-  commandParts.pop();
-  const input = commandParts.join(" ");
+  commandParts.pop(); // Remove the last part (assumed file path)
+  const input = commandParts.join(" "); // Rejoin command parts (without file path)
 
   let currentArg = "";
   let inSingleQuotes = false;
   let inDoubleQuotes = false;
   let escape = false;
+  let result = [];
 
   for (let idx = 0; idx < input.length; idx++) {
     const char = input[idx];
 
+    // Handle escape character
     if (char === "\\" && !escape) {
       escape = true;
       continue;
     }
 
     if (escape) {
+      // Handle escaped characters
       if (char === "n") {
-        currentArg += "\n";
-      } else if (inDoubleQuotes && char === "'") {
-        // Keep escaped single quotes inside double quotes
-        currentArg += "\\'";
+        currentArg += "\n"; // Handle newline escape
+      } else if (char === "t") {
+        currentArg += "\t"; // Handle tab escape
       } else if (char === "\\") {
-        currentArg += "\\";
+        currentArg += "\\"; // Handle backslash escape
+      } else if (char === "'" && inDoubleQuotes) {
+        currentArg += "'"; // Handle escaped single quotes inside double quotes
       } else {
-        currentArg += char;
+        currentArg += char; // Add the escaped character
       }
       escape = false;
     } else {
+      // Handle quotes and other characters
       if (char === '"' && !inSingleQuotes) {
         inDoubleQuotes = !inDoubleQuotes;
         currentArg += char;
       } else if (char === "'" && !inDoubleQuotes) {
         inSingleQuotes = !inSingleQuotes;
         currentArg += char;
+      } else if (char === " " && !inSingleQuotes && !inDoubleQuotes) {
+        // End of argument when not inside quotes
+        if (currentArg.length > 0) {
+          result.push(currentArg);
+          currentArg = "";
+        }
       } else {
+        // Add character to current argument
         currentArg += char;
       }
     }
   }
 
-  return currentArg.trim();
+  // Push the last argument if any
+  if (currentArg.length > 0) {
+    result.push(currentArg);
+  }
+
+  // Return the joined arguments as a string
+  return result.join(" ").trim();
 }
 
 function handleRedirection(command: string, args: string[]): void {
