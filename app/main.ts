@@ -50,13 +50,7 @@ function executeProgram(answer: string): void {
     if (command === "cat") {
       // console.log(args);
       args = args.flatMap((arg) => parseCatQuotes(arg));
-      console.log(args);
-      const formattedArgs = args.map((arg) => {
-        // Remove unnecessary escaping of double quotes
-        const unescaped = arg.replace(/\\"/g, '"');
-        // Wrap the entire path in single quotes for shell compatibility
-        return `'${unescaped}'`;
-      });
+      // console.log(args);
     }
     // Handle redirection
     const redirection = args.findIndex(
@@ -94,7 +88,7 @@ function executeProgram(answer: string): void {
 
     // console.log(resolvedFiles.join(" "));
     // If no redirection, just print output
-    console.log(resolvedFiles.join(" "));
+    // console.log(resolvedFiles.join(" "));
     const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
       encoding: "utf-8",
     });
