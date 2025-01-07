@@ -50,7 +50,6 @@ function executeProgram(answer: string): void {
     if (command === "cat") {
       // console.log(args);
       for (let arg in args) {
-        console.log(args);
         arg = parseCatQuotes(arg);
       }
       // console.log(args);
@@ -395,7 +394,7 @@ function parseCatQuotes(input: string): string {
     }
   }
 
-  console.log("Parsed string:", result);
+  // console.log("Parsed string:", result);
   return result;
 }
 
