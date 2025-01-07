@@ -398,46 +398,65 @@ function parseCatQuotes(input: string): string[] {
   if (typeof input !== "string") {
     return input;
   }
-  // console.log("initial input: ", input);
-  // const result = input.replace(/'| |"/g, "");
-  // return result;
+
   let result: string[] = [];
   let currentPath = "";
   let insideDoubleQuotes = false;
   let insideSingleQuotes = false;
   let escape = false;
 
-  for (let char of input) {
+  for (let idx = 0; idx < input.length; idx++) {
+    const char = input[idx];
+
+    // Handle escape sequences
     if (escape) {
       currentPath += char; // Add the escaped character
       escape = false;
-    } else if (char === "\\") {
-      escape = true; // Escape the next character
-    } else if (char === '"') {
+      continue;
+    }
+
+    // Escape the next character
+    if (char === "\\") {
+      escape = true;
+      continue;
+    }
+
+    // Handle double quotes
+    if (char === '"') {
       if (!insideSingleQuotes) {
         insideDoubleQuotes = !insideDoubleQuotes; // Toggle double-quote state
       }
       currentPath += char; // Keep quotes as part of the path
-    } else if (char === "'") {
+      continue;
+    }
+
+    // Handle single quotes
+    if (char === "'") {
       if (!insideDoubleQuotes) {
         insideSingleQuotes = !insideSingleQuotes; // Toggle single-quote state
       }
       currentPath += char; // Keep quotes as part of the path
-    } else if (char === " " && !insideSingleQuotes && !insideDoubleQuotes) {
-      // Split on spaces only if outside quotes
+      continue;
+    }
+
+    // Handle space when not inside quotes
+    if (char === " " && !insideSingleQuotes && !insideDoubleQuotes) {
       if (currentPath) {
         result.push(currentPath.trim());
         currentPath = "";
       }
-    } else {
-      currentPath += char; // Normal character
+      continue;
     }
+
+    // Add normal character to the current path
+    currentPath += char;
   }
 
+  // Push the last path if any
   if (currentPath) {
-    result.push(currentPath.trim()); // Add the last path
+    result.push(currentPath.trim());
   }
-  // console.log("result: ", result);
+
   return result;
 }
 
