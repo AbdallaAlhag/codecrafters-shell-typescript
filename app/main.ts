@@ -81,18 +81,21 @@ function executeProgram(answer: string): void {
       // console.log(command);
       // command = `"${command}"`; // Use single quotes for Unix-like systems
     }
-
+    // console.log(args);
     // Resolve paths for arguments and check for file existence
     // const resolvedFiles = args.map((arg) => path.resolve(arg.trim()));
     const resolvedFiles = args.map((arg) => `"${path.resolve(arg.trim())}"`);
-
+    // console.log(resolvedFiles);
     // console.log(resolvedFiles.join(" "));
+
     // If no redirection, just print output
     // console.log(resolvedFiles.join(" "));
-    const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
-      encoding: "utf-8",
-    });
-    console.log(result.trim());
+    // const result = execSync(`${command} ${resolvedFiles.join(" ")}`, {
+    //   encoding: "utf-8",
+    // });
+    const output = execSync(`${command} ${args.join(" ")}`, { stdio: "pipe" });
+    // console.log(result);
+    console.log(output.toString().trim());
   } catch (error: any) {
     console.log(`${command}: command not found`);
   }
